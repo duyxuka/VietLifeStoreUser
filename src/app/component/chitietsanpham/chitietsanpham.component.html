@@ -1,0 +1,318 @@
+<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+    <div class="container">
+    <div class="breadcumb-content">
+        <h1 class="breadcumb-title" data-cue="slideInUp">Chi tiết sản phẩm</h1>
+        <ul class="breadcumb-menu">
+            <li data-cue="slideInUp" data-delay="100"><a href="index.html">Trang chủ</a></li>
+            <li data-cue="slideInUp" data-delay="100">Chi tiết sản phẩm</li>
+        </ul>
+    </div>
+    </div>
+</div>
+<section class="product-details mt-50 space-extra-bottom">
+    <div class="container">
+    <div class="row gx-60 gy-50">
+        <div class="col-lg-6">
+            <div class="product-big-img">
+
+        <!-- Ảnh chính -->
+        <div class="img">
+            <img [src]="mainImage"
+                 alt="Product Image"
+                 class="img-fluid">
+        </div>
+
+        <!-- Ảnh phụ -->
+        <div class="product-thumb-wrap">
+            <img *ngFor="let img of images"
+                 [src]="img"
+                 class="product-thumb"
+                 [class.active]="mainImage === img"
+                 (click)="changeImage(img)">
+        </div>
+
+    </div>
+        </div>
+        <div class="col-xxl-6 align-self-center">
+            <div class="product-about">
+                <h2 class="product-title" data-cue="slideInUp">Ultricies At Torquent Dui</h2>
+                <div class="product-rating" data-cue="slideInUp">
+                <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span style="width:100%">Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                <a href="shop-details.html" class="woocommerce-review-link">(<span class="count">4</span> customer reviews)</a>
+                </div>
+                <p class="text" data-cue="slideInUp">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis varius pretium est felis scelerisque nulla, vitae placerat justo nunc a massa. Aenean nec montes vestibulum urna vel imperdiet ipsum. Orci varius natoque penatibus et magnis dis ridicul parturient montes.</p>
+                <p class="price" data-cue="slideInUp">$12.00<del>$19.99</del> <span class="stock-availability">Stock Availability.</span></p>
+                <div class="product-option" data-cue="slideInUp">
+                <div class="product-size-wrap">
+                    <div class="product-option-title">Size:</div>
+                    <a href="#">XL</a> <a href="#">M</a> <a href="#">L</a> <a href="#">S</a> <a href="#">XS</a>
+                </div>
+                <div class="product-color-wrap">
+                    <div class="product-option-title">Color:</div>
+                    <a data-theme-color="#FF4579" href="#"></a> <a data-theme-color="#1EC7DA" href="#"></a> <a data-theme-color="#3577F1" href="#"></a> <a data-theme-color="#F39F5F" href="#"></a>
+                </div>
+                </div>
+                <div class="actions">
+                <div class="quantity" data-cue="slideInUp"><button class="quantity-minus qty-btn"><i class="far fa-minus"></i></button> <input type="number" class="qty-input" step="1" min="1" max="100" name="quantity" value="1" title="Qty"> <button class="quantity-plus qty-btn"><i class="far fa-plus"></i></button></div>
+                <button class="ot-btn" data-cue="slideInUp"><i class="fa-light fa-basket-shopping me-1"></i> Add to Cart</button> <a href="wishlist.html" class="icon-btn" data-cue="slideInUp"><i class="far fa-heart"></i></a> <a href="#" class="icon-btn" data-cue="slideInUp"><i class="far fa-arrows-cross"></i></a>
+                </div>
+                <div class="product_meta" data-cue="slideInUp"><span class="sku_wrapper">SKU: <span class="sku">FTC1020B65D</span></span> <span>Tags: <a href="shop.html">4-5 years</a><a href="shop.html">12+ years</a></span> <span class="posted_in">Category: <a href="shop.html">Kids Toys</a></span> <span>Tags: <a href="shop.html">Toys</a><a href="shop.html">Baby Shirt</a></span></div>
+                <div class="checklist-wrap" data-cue="slideInUp">
+                <div class="row gy-2">
+                    <div class="col-lg-5">
+                        <div class="check-list">
+                            <ul>
+                            <li><i class="fas fa-check"></i> Free shipping orders from $150</li>
+                            <li><i class="fas fa-check"></i> 30 days exchange & return</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="check-list">
+                            <ul>
+                            <li><i class="fas fa-check"></i> Babymart Flash Discount: Starting at 30% Off</li>
+                            <li><i class="fas fa-check"></i> Safe & Secure online shopping</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul class="nav product-tab-style1" id="productTab" role="tablist">
+        <li class="nav-item" role="presentation" data-cue="slideInUp"><a class="nav-link" id="description-tab" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="false">Description</a></li>
+        <li class="nav-item" role="presentation" data-cue="slideInUp"><a class="nav-link" id="information-tab" data-bs-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="false">Additional Information</a></li>
+        <li class="nav-item" role="presentation" data-cue="slideInUp"><a class="nav-link active" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="true">Reviews (1)</a></li>
+    </ul>
+    <div class="tab-content" id="productTabContent">
+        <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
+            <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis erat interdum, tempor turpis in, sodales ex. In hac habitasse platea dictumst. Etiam accumsan scelerisque urna, a lobortis velit vehicula ut. Maecenas porttitor dolor a velit aliquet, et euismod nibh vulputate. Duis nunc velit, lacinia vel risus in, finibus sodales augue. Aliquam lacinia imperdiet dictum. Etiam tempus finibus tortor, quis placerat arcu tristique in. Sed vitae dui a diam luctus maximus. Quisque nec felis dapibus, dapibus enim vitae, vestibulum libero. Aliquam erat volutpat. Phasellus luctus rhoncus justo. Duis a nulla sit amet justo aliquam ullamcorper. Phasellus nulla lorem, pretium et libero in, porta auctor dui. In a ornare purus, et efficitur elit. Etiam consectetur sit amet quam ut tincidunt. Donec gravida ultricies tellus ac pharetra.</p>
+            <p class="mb-0">Praesent a pulvinar purus. Proin sollicitudin leo eget mi sagittis aliquam. Donec sollicitudin ex ac lobortis mollis. Sed eget libero nec mi</p>
+        </div>
+        <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+            <table class="woocommerce-table mb-0">
+                <tbody>
+                <tr>
+                    <th>Weight</th>
+                    <td>15 kg</td>
+                </tr>
+                <tr>
+                    <th>Dimensions</th>
+                    <td>30 × 32 × 46 cm</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+            <div class="woocommerce-Reviews">
+                <div class="ot-comments-wrap">
+                <ul class="comment-list">
+                    <li class="review ot-comment-item">
+                        <div class="ot-post-comment">
+                            <div class="comment-avater"><img src="assets/img/blog/comment-author-5.html" alt="Comment Author"></div>
+                            <div class="comment-content">
+                            <h4 class="name">Leslie Alexander</h4>
+                            <span class="commented-on">February 10, 2024 at 2:37 pm</span>
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span style="width:100%">Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                            <p class="text">Neque porro est qui dolorem ipsum quia quaed inventor veritatis et quasi architecto var sed efficitur turpis gilla sed sit amet finibus eros. Lorem Ipsum is simply dummy</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                </div>
+                <div class="ot-comment-form">
+                <div class="form-title">
+                    <h5 class="blog-inner-title">Add a review</h5>
+                </div>
+                <div class="row gy-30">
+                    <div class="col-12 form-group rating-select d-flex align-items-center">
+                        <label>Your Rating</label>
+                        <p class="stars"><span><a class="star-1" href="#">1</a> <a class="star-2" href="#">2</a> <a class="star-3" href="#">3</a> <a class="star-4" href="#">4</a> <a class="star-5" href="#">5</a></span></p>
+                    </div>
+                    <div class="col-md-6 form-group"><label>Your Name*</label> <input type="text" placeholder="Your Name" class="form-control"></div>
+                    <div class="col-md-6 form-group"><label>Your Email*</label> <input type="text" placeholder="Your Email" class="form-control"></div>
+                    <div class="col-12 form-group"><label>Message*</label> <textarea placeholder="Write a Message" class="form-control"></textarea></div>
+                    <div class="col-12 form-group"><input id="reviewcheck" name="reviewcheck" type="checkbox"> <label for="reviewcheck">I Accept Your Terms & Conditions<span class="checkmark"></span></label></div>
+                    <div class="col-12 form-group mb-0"><button class="ot-btn">Submit Now</button></div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="space-top mb-30">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-xl-4">
+                <div class="title-area text-center">
+                <h2 class="sec-title">Related Products</h2>
+                <p class="sec-text">Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec at nulla nulla. Duis posuere ex lacus</p>
+                </div>
+            </div>
+        </div>
+        <div class="swiper ot-slider has-shadow" id="productSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"3"},"1400":{"slidesPerView":"5"}}}'>
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-5.png" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Ultricies At Torquent Dui</a></h3>
+                        <span class="price">$20.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-10.png" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Playtime Excitement!</a></h3>
+                        <span class="price">$30.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-12.html" alt="Product Image"> <span class="product-tag">-12%</span>
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Tinci Dunt Pharetra Soda</a></h3>
+                        <span class="price">$12.00 <del>$19.99</del></span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-14.html" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Animals pet green</a></h3>
+                        <span class="price">$30.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-15.html" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Round new red toy</a></h3>
+                        <span class="price">$26.00 <del>$30.99</del></span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-5.png" alt="Product Image"> <span class="product-tag">-12%</span>
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Ultricies At Torquent Dui</a></h3>
+                        <span class="price">$12.00 <del>$19.99</del></span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-10.png" alt="Product Image"> <span class="product-tag">-12%</span>
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Playtime Excitement!</a></h3>
+                        <span class="price">$12.00 <del>$19.99</del></span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-12.html" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Tinci Dunt Pharetra Soda</a></h3>
+                        <span class="price">$30.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-14.html" alt="Product Image"> <span class="product-tag"><span class="tag">Hot</span> <span class="offer">-30%</span></span>
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Animals pet green</a></h3>
+                        <span class="price">$16.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+                <div class="swiper-slide">
+                <div class="ot-product product-grid style2" data-cue="slideInUp">
+                    <div class="product-img">
+                        <img src="assets/img/product/post-card1-15.html" alt="Product Image">
+                        <div class="actions"><a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> <button class="icon-btn"><i class="fa-light fa-arrows-cross"></i></button> <a href="#QuickView" class="icon-btn popup-content"><i class="far fa-eye"></i></a></div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="box-title"><a href="shop-details.html">Round new red toy</a></h3>
+                        <span class="price">$14.00</span>
+                        <div class="woocommerce-product-rating">
+                            <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                        </div>
+                        <a class="ot-btn" href="cart.html"><i class="fa-light fa-basket-shopping me-1"></i> Add To Cart</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>

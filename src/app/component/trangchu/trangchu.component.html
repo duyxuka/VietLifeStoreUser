@@ -1,0 +1,807 @@
+
+<owl-carousel-o [options]="customOptions">
+
+  <ng-template
+    carouselSlide
+    *ngFor="let banner of banners">
+
+    <div class="ot-hero-wrapper hero-1">
+      <div class="hero-inner">
+        <div class="container">
+          <div class="hero-wrap1"
+               [style.backgroundImage]="'url(' + banner.anhContent + ')'">
+
+            <div class="hero-style1">
+              <span class="sub-title">
+                {{ banner.moTa }}
+              </span>
+
+              <h1 class="hero-title text-white">
+                {{ banner.tieuDe }}
+              </h1>
+
+              <div class="btn-group">
+                <a
+                  [href]="banner.lienKet"
+                  class="ot-btn style-white">
+                  Shop Now
+                  <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-template>
+
+</owl-carousel-o>
+
+<section
+    class="mt-60 mb-60">
+    <div class="container">
+    <div class="row gy-4">
+        <div
+            class="col-lg-3 col-sm-6" data-cue="slideInUp">
+            <div
+                class="feature-list" data-theme-color="#00BBAE">
+                <div
+                class="box-icon"><img
+                src="assets/img/icon/feature-icon1-1.svg"
+                alt="icon"></div>
+                <div class="media-body">
+                <h3
+                    class="box-title">Đổi trả & hoàn tiền</h3>
+                <p
+                    class="box-text">Đảm bảo hoàn tiền
+                </p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-lg-3 col-sm-6" data-cue="slideInUp">
+            <div
+                class="feature-list" data-theme-color="#C062D0">
+                <div
+                class="box-icon"><img
+                src="assets/img/icon/feature-icon1-2.svg"
+                alt="icon"></div>
+                <div class="media-body">
+                <h3
+                    class="box-title">Thanh toán an toàn</h3>
+                <p
+                    class="box-text">Giảm 30% khi đăng ký
+                </p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-lg-3 col-sm-6" data-cue="slideInUp">
+            <div
+                class="feature-list" data-theme-color="#71D863">
+                <div
+                class="box-icon"><img
+                src="assets/img/icon/feature-icon1-3.svg"
+                alt="icon"></div>
+                <div class="media-body">
+                <h3
+                    class="box-title">Hỗ trợ chất lượng</h3>
+                <p
+                    class="box-text">Luôn trực tuyến
+                    24/7
+                </p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-lg-3 col-sm-6" data-cue="slideInUp">
+            <div
+                class="feature-list" data-theme-color="#16C4E3">
+                <div
+                class="box-icon"><img
+                src="assets/img/icon/feature-icon1-4.svg"
+                alt="icon"></div>
+                <div class="media-body">
+                <h3
+                    class="box-title">Khuyến mãi hàng ngày</h3>
+                <p
+                    class="box-text">Giảm 20% khi đăng ký
+                </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section
+    class="position-relative space overflow-hidden bg-smoke3">
+    <div
+    class="cloud-bg-top-shape1"
+    data-bg-src="assets/img/shape/cloud.png"></div>
+    <div
+    class="cloud-bg-bottom-shape1"
+    data-bg-src="assets/img/shape/cloud.png"></div>
+    <div
+    class="container">
+    <div
+        class="row justify-content-xl-between justify-content-center align-items-center">
+        <div
+            class="col-xl-4 col-lg-6 col-md-8">
+            <div
+                class="title-area text-xl-start text-center"
+                data-cue="slideInUp">
+                <h2 class="sec-title">
+                    Sản phẩm của chúng tôi
+                </h2>
+            </div>
+        </div>
+        <div
+            class="col-xl-auto">
+            <div class="sec-btn"
+                data-cue="slideInUp" data-delay="100">
+                <div
+                class="filter-menu indicator-active justify-content-center">
+                <button
+                    *ngFor="let dm of danhMucs"
+                    class="link-btn tab-btn"
+                    [class.active]="dm.id === selectedDanhMuc?.id"
+                    (click)="selectDanhMuc(dm)"
+                >
+                    {{ dm.ten }}
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+        class="row flex-row-reverse gy-30 justify-content-center">
+        <div
+            class="col-xxl-7">
+            <div
+                class="row gy-30">
+                <div
+                class="col-xl-4 col-lg-4 col-md-6" *ngFor="let sp of sanPhams">
+                <div
+                    class="ot-product product-grid bg-white">
+                    <div
+                        class="product-img">
+                        <img [src]="sp.anhDaiDienContent" alt="Product Image" />
+                        <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                            class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                            class="icon-btn popup-content"><i
+                            class="far fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div
+                        class="product-content">
+                        <h3
+                            class="box-title"><a
+                            href="shop-details.html">{{ sp.ten }}</a>
+                        </h3>
+                        <span
+                            class="price">{{ sp.gia | number }}đ</span>
+                        <div
+                            class="woocommerce-product-rating">
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="product-hover-content">
+                        <h3
+                            class="box-title"><a
+                            href="shop-details.html">{{ sp.ten }}</a>
+                        </h3>
+                        <span
+                            class="price">{{ sp.gia | number }}đ</span>
+                        <div
+                            class="woocommerce-product-rating">
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <a
+                            class="ot-btn" href="cart.html"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                        Add To
+                        Cart</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-5 col-xl-6 col-lg-8">
+            <a href="shop-details.html" class="ad-card">
+                <img class="w-100" [src]="thumbnailLeft || 'assets/img/normal/ad1-1.png'" alt="img">
+            </a>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section class="mt-60">
+    <div class="container">
+    <div
+        class="row gy-30 justify-content-center">
+        <div
+            class="col-xxl-9 col-xl-7">
+            <div
+                class="product-list-wrap1 bg-white">
+                <div
+                class="row justify-content-between align-items-center">
+                <div
+                    class="col-md-auto">
+                    <div
+                        class="title-area mb-30 text-center"
+                        data-cue="slideInUp">
+                        <h3
+                            class="sec-title">Sản phẩm được mua nhiều nhất
+                        </h3>
+                    </div>
+                </div>
+                <div
+                    class="col-md-auto">
+                    <div
+                        class="sec-btn mb-30"
+                        data-cue="slideInUp"><a href="shop.html"
+                        class="ot-btn style7">View More<i
+                        class="fas fa-arrow-right ms-2"></i></a></div>
+                </div>
+                </div>
+                <div
+                class="row gy-30 justify-content-xxl-start justify-content-center">
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-8.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">Beige
+                            One-Piece
+                            Dress</a>
+                            </h3>
+                            <span
+                            class="price">$19.00<del>$26.99</del></span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-10.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">Playtime
+                            Excitement!</a>
+                            </h3>
+                            <span
+                            class="price">$26.00<del>$26.99</del></span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-3.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">The
+                            Playtime
+                            Excitement!</a>
+                            </h3>
+                            <span
+                            class="price">$30.00<del>$39.99</del></span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-11.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">White
+                            One-Piece
+                            Dress</a>
+                            </h3>
+                            <span
+                            class="price">$15.00</span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-5.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">Ultricies
+                            At Torquent
+                            Dui</a>
+                            </h3>
+                            <span
+                            class="price">$19.00<del>$26.99</del></span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="col-xxl-6 col-xl-12 col-lg-6">
+                    <div
+                        class="ot-product list-view style-border"
+                        data-cue="slideInUp">
+                        <div
+                            class="product-img"><img
+                            src="assets/img/product/post-card1-6.png"
+                            alt="Product Image"></div>
+                        <div
+                            class="product-content">
+                            <h3
+                            class="box-title"><a
+                            href="shop-details.html">Tinci
+                            Dunt Pharetra
+                            Soda</a>
+                            </h3>
+                            <span
+                            class="price">$12.00<del>$19.99</del></span>
+                            <div
+                            class="star-rating" role="img"
+                            aria-label="Rated 5.00 out of 5"><span>Rated
+                            <strong
+                                class="rating">5.00</strong>
+                            out of 5 based on <span
+                                class="rating">1</span>
+                            customer
+                            rating</span>
+                            </div>
+                        </div>
+                        <div
+                            class="product-action-wrap align-self-center">
+                            <div
+                            class="actions"><a
+                            href="wishlist.html"
+                            class="icon-btn"><i
+                            class="far fa-heart"></i></a>
+                            <button class="icon-btn"><i
+                                class="fa-light fa-arrows-cross"></i></button>
+                            <a href="#QuickView"
+                                class="icon-btn popup-content"><i
+                                class="far fa-eye"></i></a>
+                            </div>
+                            <a
+                            href="shop.html"
+                            class="ot-btn style7"><i
+                            class="fa-light fa-basket-shopping me-1"></i>
+                            Add To
+                            Cart</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-xxl-3 col-xl-5 col-lg-7">
+            <div
+                class="ad-card2">
+                <div class="card-content">
+                <h4
+                    class="box-title">Best Toy for Kids</h4>
+                <p
+                    class="card-price">$10.00
+                    <del>$20.00</del>
+                </p>
+                <div
+                    class="btn-wrap"><a href="shop-details.html"
+                    class="ot-btn">Shop Now<i
+                    class="fas fa-arrow-right ms-2"></i></a></div>
+                </div>
+                <img
+                class="w-100" src="assets/img/normal/ad1-2.jpg"
+                alt="img">
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section
+    class="mt-60">
+    <div class="container z-index-common">
+    <div
+        class="cta-box position-relative"
+        data-bg-src="assets/img/bg/cta_bg_2_1.png">
+        <div
+            class="body-particle" id="cta-particle"></div>
+        <div
+            class="row">
+            <div class="col-xl-6">
+                <div
+                class="box-content text-xl-start text-center">
+                <div
+                    class="title-area mb-30"
+                    data-cue="slideInUp">
+                    <h2
+                        class="sec-title text-white">Get 45%
+                        discount in all of<br
+                            class="d-xxl-block d-none">Our super
+                        Toys
+                    </h2>
+                </div>
+                <a
+                    href="shop-details.html"
+                    class="ot-btn style-white"
+                    data-cue="slideInUp" data-delay="100">Shop
+                Now<i
+                    class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+            <div
+                class="col-xl-6 align-self-end">
+                <div
+                class="cta-thumb2-1 text-xl-end text-center"
+                data-cue="slideInUp" data-delay="100"><img
+                src="assets/img/normal/cta-thumb2-1.png"
+                alt="img"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<section
+    class="space">
+    <div class="container">
+    <div
+        class="row justify-content-center">
+        <div
+            class="col-xl-4 col-lg-6">
+            <div
+                class="title-area text-center">
+                <h2 class="sec-title"
+                data-cue="slideInUp">Tin tức & Bài viết mới nhất của chúng tôi
+                </h2>
+                <p class="sec-text"
+                data-cue="slideInUp" data-delay="100">Interdum
+                et malesuada fames ac ante ipsum primis in
+                faucibus. Donec at nulla nulla. Duis posuere ex
+                lacus
+                </p>
+            </div>
+        </div>
+    </div>
+    <div
+        class="row gy-4 justify-content-center">
+        <div
+            class="col-xxl-3 col-xl-4 col-md-6">
+            <div
+                class="blog-card style2" data-cue="slideInUp">
+                <div
+                class="blog-img"><img
+                src="assets/img/blog/blog_1_1.png"
+                alt="blog image"> <span
+                class="blog-tag">Activities</span></div>
+                <div
+                class="blog-content">
+                <div class="blog-meta"><a
+                    href="blog.html"><i
+                    class="far fa-calendar-days"></i>Feb
+                    16, 2025</a> <a href="blog.html"><i
+                        class="far fa-user"></i>By
+                    Babymart</a>
+                </div>
+                <h3
+                    class="box-title"><a
+                    href="blog-details.html">Montes
+                    suspendisse massa curae
+                    malesuada</a>
+                </h3>
+                <a
+                    href="blog-details.html"
+                    class="link-btn">Read More<i
+                    class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-xxl-3 col-xl-4 col-md-6">
+            <div
+                class="blog-card style2" data-cue="slideInUp">
+                <div
+                class="blog-img"><img
+                src="assets/img/blog/blog_1_2.png"
+                alt="blog image"> <span
+                class="blog-tag">Activities</span></div>
+                <div
+                class="blog-content">
+                <div class="blog-meta"><a
+                    href="blog.html"><i
+                    class="far fa-calendar-days"></i>Mar
+                    10, 2025</a> <a href="blog.html"><i
+                        class="far fa-user"></i>By
+                    Babymart</a>
+                </div>
+                <h3
+                    class="box-title"><a
+                    href="blog-details.html">Playful Picks
+                    Paradise: Kids’ Essentials with
+                    Dash.</a>
+                </h3>
+                <a
+                    href="blog-details.html"
+                    class="link-btn">Read More<i
+                    class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-xxl-3 col-xl-4 col-md-6">
+            <div
+                class="blog-card style2" data-cue="slideInUp">
+                <div
+                class="blog-img"><img
+                src="assets/img/blog/blog_1_3.png"
+                alt="blog image"> <span
+                class="blog-tag">Activities</span></div>
+                <div
+                class="blog-content">
+                <div class="blog-meta"><a
+                    href="blog.html"><i
+                    class="far fa-calendar-days"></i>Jun
+                    17, 2025</a> <a href="blog.html"><i
+                        class="far fa-user"></i>By
+                    Babymart</a>
+                </div>
+                <h3
+                    class="box-title"><a
+                    href="blog-details.html">Tiny Emporium:
+                    Playful Picks for Kids’ Delightful
+                    Days.</a>
+                </h3>
+                <a
+                    href="blog-details.html"
+                    class="link-btn">Read More<i
+                    class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="col-xxl-3 col-xl-4 col-md-6">
+            <div
+                class="blog-card style2" data-cue="slideInUp">
+                <div
+                class="blog-img"><img
+                src="assets/img/blog/blog_1_4.png"
+                alt="blog image"> <span
+                class="blog-tag">Activities</span></div>
+                <div
+                class="blog-content">
+                <div class="blog-meta"><a
+                    href="blog.html"><i
+                    class="far fa-calendar-days"></i>Jul
+                    15, 2025</a> <a href="blog.html"><i
+                        class="far fa-user"></i>By
+                    Babymart</a>
+                </div>
+                <h3
+                    class="box-title"><a
+                    href="blog-details.html">Eu parturient
+                    dictumst fames quam tempor</a>
+                </h3>
+                <a
+                    href="blog-details.html"
+                    class="link-btn">Read More<i
+                    class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>

@@ -12,13 +12,15 @@ import { ThanhtoanComponent } from './component/thanhtoan/thanhtoan.component';
 import { TimkiemsanphamComponent } from './component/timkiemsanpham/timkiemsanpham.component';
 import { LienheComponent } from './component/lienhe/lienhe.component';
 import { ChinhsachComponent } from './component/chinhsach/chinhsach.component';
+import { DanhmucsanphamComponent } from './component/danhmucsanpham/danhmucsanpham.component';
+import { DanhmuccamnangComponent } from './component/danhmuccamnang/danhmuccamnang.component';
 
 const routes: Routes = [
   { path: '', component: TrangchuComponent },
   { path: 'danhsachsanpham', component: DanhsachsanphamComponent },
-  { path: 'chitietsanpham', component: ChitietsanphamComponent },
+  { path: 'chitietsanpham/:slug', component: ChitietsanphamComponent },
   { path: 'danhsachcamnang', component: DanhsachcamnangComponent },
-  { path: 'chitietcamnang', component: ChitietcamnangComponent },
+  { path: 'chitietcamnang/:slug', component: ChitietcamnangComponent },
   { path: 'dangnhap', component: DangnhapComponent },
   { path: 'dangky', component: DangkyComponent },
   { path: 'giohang', component: GiohangComponent },
@@ -26,6 +28,8 @@ const routes: Routes = [
   { path: 'timkiemsanpham', component: TimkiemsanphamComponent },
   { path: 'lienhe', component: LienheComponent },
   { path: 'chinhsach', component: ChinhsachComponent },
+  { path: 'danhmucsanpham/:slug', component: DanhmucsanphamComponent },
+  { path: 'danhmuccamnang/:slug', component: DanhmuccamnangComponent },
 ];
 
 @NgModule({

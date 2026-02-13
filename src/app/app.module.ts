@@ -20,6 +20,9 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DanhmucsanphamComponent } from './component/danhmucsanpham/danhmucsanpham.component';
+import { DanhmuccamnangComponent } from './component/danhmuccamnang/danhmuccamnang.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -35,14 +38,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TimkiemsanphamComponent,
     DangnhapComponent,
     DangkyComponent,
-    ChinhsachComponent
+    ChinhsachComponent,
+    DanhmucsanphamComponent,
+    DanhmuccamnangComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     CarouselModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    FormsModule   
   ],
   providers: [
     provideAnimations(),

@@ -9,7 +9,7 @@
       <div class="hero-inner">
         <div class="container">
           <div class="hero-wrap1"
-               [style.backgroundImage]="'url(' + banner.anhContent + ')'">
+               [style.backgroundImage]="'url(' + getImageBanner(banner.anh) + ')'">
 
             <div class="hero-style1">
               <span class="sub-title">
@@ -147,7 +147,7 @@
                 <button
                     *ngFor="let dm of danhMucs"
                     class="link-btn tab-btn"
-                    [class.active]="dm.id === selectedDanhMuc?.id"
+                    [class.active]="dm.slug === selectedDanhMuc?.slug"
                     (click)="selectDanhMuc(dm)"
                 >
                     {{ dm.ten }}
@@ -165,10 +165,11 @@
                 <div
                 class="col-xl-4 col-lg-4 col-md-6" *ngFor="let sp of sanPhams">
                 <div
-                    class="ot-product product-grid bg-white">
+                    class="ot-product product-grid bg-white" >
                     <div
                         class="product-img">
-                        <img [src]="sp.anhDaiDienContent" alt="Product Image" />
+                        <img [src]="getImageSanPham(sp.anh)" alt="Product Image"> 
+                        <span class="product-tag" *ngIf="sp.phanTramGiamGia">-{{sp.phanTramGiamGia}}%</span>
                         <div
                             class="actions"><a
                             href="wishlist.html"
@@ -187,8 +188,8 @@
                             class="box-title"><a
                             href="shop-details.html">{{ sp.ten }}</a>
                         </h3>
-                        <span
-                            class="price">{{ sp.gia | number }}đ</span>
+                        <span class="price">{{ sp.gia | number }}đ
+                        <del *ngIf="sp.giaKhuyenMai && sp.giaKhuyenMai > 0">{{ sp.giaKhuyenMai | number }}đ</del></span>
                         <div
                             class="woocommerce-product-rating">
                             <div
@@ -209,8 +210,8 @@
                             class="box-title"><a
                             href="shop-details.html">{{ sp.ten }}</a>
                         </h3>
-                        <span
-                            class="price">{{ sp.gia | number }}đ</span>
+                        <span class="price">{{ sp.gia | number }}đ
+                        <del *ngIf="sp.giaKhuyenMai && sp.giaKhuyenMai > 0">{{ sp.giaKhuyenMai | number }}đ</del></span>
                         <div
                             class="woocommerce-product-rating">
                             <div
@@ -236,7 +237,7 @@
         </div>
         <div class="col-xxl-5 col-xl-6 col-lg-8">
             <a href="shop-details.html" class="ad-card">
-                <img class="w-100" [src]="thumbnailLeft || 'assets/img/normal/ad1-1.png'" alt="img">
+                <img class="w-100" [src]="thumbnailLeft ? thumbnailLeft : 'assets/img/normal/ad1-1.png'" alt="img">
             </a>
         </div>
     </div>
@@ -274,284 +275,21 @@
                 </div>
                 <div
                 class="row gy-30 justify-content-xxl-start justify-content-center">
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
+                <div class="col-xxl-6 col-xl-12 col-lg-6" *ngFor="let spbc of sanPhamsbanchay">
                     <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
+                        class="ot-product list-view style-border">
                         <div
                             class="product-img"><img
-                            src="assets/img/product/post-card1-8.png"
+                            [src]="getImageSanPham(spbc.anh) || 'assets/img/product/post-card1-8.png'"
                             alt="Product Image"></div>
                         <div
                             class="product-content">
                             <h3
                             class="box-title"><a
-                            href="shop-details.html">Beige
-                            One-Piece
-                            Dress</a>
+                            href="shop-details.html">{{spbc.ten}}</a>
                             </h3>
                             <span
-                            class="price">$19.00<del>$26.99</del></span>
-                            <div
-                            class="star-rating" role="img"
-                            aria-label="Rated 5.00 out of 5"><span>Rated
-                            <strong
-                                class="rating">5.00</strong>
-                            out of 5 based on <span
-                                class="rating">1</span>
-                            customer
-                            rating</span>
-                            </div>
-                        </div>
-                        <div
-                            class="product-action-wrap align-self-center">
-                            <div
-                            class="actions"><a
-                            href="wishlist.html"
-                            class="icon-btn"><i
-                            class="far fa-heart"></i></a>
-                            <button class="icon-btn"><i
-                                class="fa-light fa-arrows-cross"></i></button>
-                            <a href="#QuickView"
-                                class="icon-btn popup-content"><i
-                                class="far fa-eye"></i></a>
-                            </div>
-                            <a
-                            href="shop.html"
-                            class="ot-btn style7"><i
-                            class="fa-light fa-basket-shopping me-1"></i>
-                            Add To
-                            Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
-                    <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
-                        <div
-                            class="product-img"><img
-                            src="assets/img/product/post-card1-10.png"
-                            alt="Product Image"></div>
-                        <div
-                            class="product-content">
-                            <h3
-                            class="box-title"><a
-                            href="shop-details.html">Playtime
-                            Excitement!</a>
-                            </h3>
-                            <span
-                            class="price">$26.00<del>$26.99</del></span>
-                            <div
-                            class="star-rating" role="img"
-                            aria-label="Rated 5.00 out of 5"><span>Rated
-                            <strong
-                                class="rating">5.00</strong>
-                            out of 5 based on <span
-                                class="rating">1</span>
-                            customer
-                            rating</span>
-                            </div>
-                        </div>
-                        <div
-                            class="product-action-wrap align-self-center">
-                            <div
-                            class="actions"><a
-                            href="wishlist.html"
-                            class="icon-btn"><i
-                            class="far fa-heart"></i></a>
-                            <button class="icon-btn"><i
-                                class="fa-light fa-arrows-cross"></i></button>
-                            <a href="#QuickView"
-                                class="icon-btn popup-content"><i
-                                class="far fa-eye"></i></a>
-                            </div>
-                            <a
-                            href="shop.html"
-                            class="ot-btn style7"><i
-                            class="fa-light fa-basket-shopping me-1"></i>
-                            Add To
-                            Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
-                    <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
-                        <div
-                            class="product-img"><img
-                            src="assets/img/product/post-card1-3.png"
-                            alt="Product Image"></div>
-                        <div
-                            class="product-content">
-                            <h3
-                            class="box-title"><a
-                            href="shop-details.html">The
-                            Playtime
-                            Excitement!</a>
-                            </h3>
-                            <span
-                            class="price">$30.00<del>$39.99</del></span>
-                            <div
-                            class="star-rating" role="img"
-                            aria-label="Rated 5.00 out of 5"><span>Rated
-                            <strong
-                                class="rating">5.00</strong>
-                            out of 5 based on <span
-                                class="rating">1</span>
-                            customer
-                            rating</span>
-                            </div>
-                        </div>
-                        <div
-                            class="product-action-wrap align-self-center">
-                            <div
-                            class="actions"><a
-                            href="wishlist.html"
-                            class="icon-btn"><i
-                            class="far fa-heart"></i></a>
-                            <button class="icon-btn"><i
-                                class="fa-light fa-arrows-cross"></i></button>
-                            <a href="#QuickView"
-                                class="icon-btn popup-content"><i
-                                class="far fa-eye"></i></a>
-                            </div>
-                            <a
-                            href="shop.html"
-                            class="ot-btn style7"><i
-                            class="fa-light fa-basket-shopping me-1"></i>
-                            Add To
-                            Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
-                    <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
-                        <div
-                            class="product-img"><img
-                            src="assets/img/product/post-card1-11.png"
-                            alt="Product Image"></div>
-                        <div
-                            class="product-content">
-                            <h3
-                            class="box-title"><a
-                            href="shop-details.html">White
-                            One-Piece
-                            Dress</a>
-                            </h3>
-                            <span
-                            class="price">$15.00</span>
-                            <div
-                            class="star-rating" role="img"
-                            aria-label="Rated 5.00 out of 5"><span>Rated
-                            <strong
-                                class="rating">5.00</strong>
-                            out of 5 based on <span
-                                class="rating">1</span>
-                            customer
-                            rating</span>
-                            </div>
-                        </div>
-                        <div
-                            class="product-action-wrap align-self-center">
-                            <div
-                            class="actions"><a
-                            href="wishlist.html"
-                            class="icon-btn"><i
-                            class="far fa-heart"></i></a>
-                            <button class="icon-btn"><i
-                                class="fa-light fa-arrows-cross"></i></button>
-                            <a href="#QuickView"
-                                class="icon-btn popup-content"><i
-                                class="far fa-eye"></i></a>
-                            </div>
-                            <a
-                            href="shop.html"
-                            class="ot-btn style7"><i
-                            class="fa-light fa-basket-shopping me-1"></i>
-                            Add To
-                            Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
-                    <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
-                        <div
-                            class="product-img"><img
-                            src="assets/img/product/post-card1-5.png"
-                            alt="Product Image"></div>
-                        <div
-                            class="product-content">
-                            <h3
-                            class="box-title"><a
-                            href="shop-details.html">Ultricies
-                            At Torquent
-                            Dui</a>
-                            </h3>
-                            <span
-                            class="price">$19.00<del>$26.99</del></span>
-                            <div
-                            class="star-rating" role="img"
-                            aria-label="Rated 5.00 out of 5"><span>Rated
-                            <strong
-                                class="rating">5.00</strong>
-                            out of 5 based on <span
-                                class="rating">1</span>
-                            customer
-                            rating</span>
-                            </div>
-                        </div>
-                        <div
-                            class="product-action-wrap align-self-center">
-                            <div
-                            class="actions"><a
-                            href="wishlist.html"
-                            class="icon-btn"><i
-                            class="far fa-heart"></i></a>
-                            <button class="icon-btn"><i
-                                class="fa-light fa-arrows-cross"></i></button>
-                            <a href="#QuickView"
-                                class="icon-btn popup-content"><i
-                                class="far fa-eye"></i></a>
-                            </div>
-                            <a
-                            href="shop.html"
-                            class="ot-btn style7"><i
-                            class="fa-light fa-basket-shopping me-1"></i>
-                            Add To
-                            Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="col-xxl-6 col-xl-12 col-lg-6">
-                    <div
-                        class="ot-product list-view style-border"
-                        data-cue="slideInUp">
-                        <div
-                            class="product-img"><img
-                            src="assets/img/product/post-card1-6.png"
-                            alt="Product Image"></div>
-                        <div
-                            class="product-content">
-                            <h3
-                            class="box-title"><a
-                            href="shop-details.html">Tinci
-                            Dunt Pharetra
-                            Soda</a>
-                            </h3>
-                            <span
-                            class="price">$12.00<del>$19.99</del></span>
+                            class="price">{{spbc.gia | number}}đ<del *ngIf="spbc.giaKhuyenMai">{{spbc.giaKhuyenMai | number}}đ</del></span>
                             <div
                             class="star-rating" role="img"
                             aria-label="Rated 5.00 out of 5"><span>Rated
@@ -679,125 +417,26 @@
     </div>
     <div
         class="row gy-4 justify-content-center">
-        <div
-            class="col-xxl-3 col-xl-4 col-md-6">
+        <div class="col-xxl-3 col-xl-4 col-md-6" *ngFor="let cn of camNangMoiNhat">
             <div
-                class="blog-card style2" data-cue="slideInUp">
+                class="blog-card style2">
                 <div
-                class="blog-img"><img
-                src="assets/img/blog/blog_1_1.png"
-                alt="blog image"> <span
+                class="blog-img"><img [src]="getImageCamNang(cn.anh)" alt="Blog Image"> <span
                 class="blog-tag">Activities</span></div>
                 <div
                 class="blog-content">
                 <div class="blog-meta"><a
                     href="blog.html"><i
-                    class="far fa-calendar-days"></i>Feb
-                    16, 2025</a> <a href="blog.html"><i
-                        class="far fa-user"></i>By
-                    Babymart</a>
+                    class="far fa-calendar-days"></i>{{cn.creationTime | date:'MMM dd, yyyy'}}</a> <a href="blog.html"><i
+                        class="far fa-user"></i>Admin VietLifeStore</a>
                 </div>
                 <h3
                     class="box-title"><a
-                    href="blog-details.html">Montes
-                    suspendisse massa curae
-                    malesuada</a>
+                    href="blog-details.html">{{cn.ten}}</a>
                 </h3>
                 <a
                     href="blog-details.html"
-                    class="link-btn">Read More<i
-                    class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div
-            class="col-xxl-3 col-xl-4 col-md-6">
-            <div
-                class="blog-card style2" data-cue="slideInUp">
-                <div
-                class="blog-img"><img
-                src="assets/img/blog/blog_1_2.png"
-                alt="blog image"> <span
-                class="blog-tag">Activities</span></div>
-                <div
-                class="blog-content">
-                <div class="blog-meta"><a
-                    href="blog.html"><i
-                    class="far fa-calendar-days"></i>Mar
-                    10, 2025</a> <a href="blog.html"><i
-                        class="far fa-user"></i>By
-                    Babymart</a>
-                </div>
-                <h3
-                    class="box-title"><a
-                    href="blog-details.html">Playful Picks
-                    Paradise: Kids’ Essentials with
-                    Dash.</a>
-                </h3>
-                <a
-                    href="blog-details.html"
-                    class="link-btn">Read More<i
-                    class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div
-            class="col-xxl-3 col-xl-4 col-md-6">
-            <div
-                class="blog-card style2" data-cue="slideInUp">
-                <div
-                class="blog-img"><img
-                src="assets/img/blog/blog_1_3.png"
-                alt="blog image"> <span
-                class="blog-tag">Activities</span></div>
-                <div
-                class="blog-content">
-                <div class="blog-meta"><a
-                    href="blog.html"><i
-                    class="far fa-calendar-days"></i>Jun
-                    17, 2025</a> <a href="blog.html"><i
-                        class="far fa-user"></i>By
-                    Babymart</a>
-                </div>
-                <h3
-                    class="box-title"><a
-                    href="blog-details.html">Tiny Emporium:
-                    Playful Picks for Kids’ Delightful
-                    Days.</a>
-                </h3>
-                <a
-                    href="blog-details.html"
-                    class="link-btn">Read More<i
-                    class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div
-            class="col-xxl-3 col-xl-4 col-md-6">
-            <div
-                class="blog-card style2" data-cue="slideInUp">
-                <div
-                class="blog-img"><img
-                src="assets/img/blog/blog_1_4.png"
-                alt="blog image"> <span
-                class="blog-tag">Activities</span></div>
-                <div
-                class="blog-content">
-                <div class="blog-meta"><a
-                    href="blog.html"><i
-                    class="far fa-calendar-days"></i>Jul
-                    15, 2025</a> <a href="blog.html"><i
-                        class="far fa-user"></i>By
-                    Babymart</a>
-                </div>
-                <h3
-                    class="box-title"><a
-                    href="blog-details.html">Eu parturient
-                    dictumst fames quam tempor</a>
-                </h3>
-                <a
-                    href="blog-details.html"
-                    class="link-btn">Read More<i
+                    class="link-btn">Xem thêm<i
                     class="fas fa-arrow-right"></i></a>
                 </div>
             </div>

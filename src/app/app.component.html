@@ -413,21 +413,9 @@
                         </li>
                         <li
                             class="menu-item-has-children">
-                            <a
-                              href="#">Sản phẩm</a>
-                            <ul
-                              class="sub-menu">
-                              <li><a
-                                  href="/danhsachsanpham">Danh sách sản phẩm</a></li>
-                              <li><a
-                                  href="/chitietsanpham">Chi tiết sản phẩm</a>
-                              </li>
-                              <li><a
-                                  href="/giohang">Giỏ hàng</a></li>
-                              <li><a
-                                  href="/thanhtoan">Thanh toán</a></li>
-                              <li><a
-                                  href="wishlist.html">Yêu thích</a></li>
+                            <a href="/danhsachsanpham">Sản phẩm</a>
+                            <ul class="sub-menu">
+                              <li *ngFor="let dm of danhMucs"><a href="/danhmucsanpham/{{dm.slug}}">{{dm.ten}}</a></li>
                             </ul>
                         </li>
                         

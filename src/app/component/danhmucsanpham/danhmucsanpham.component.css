@@ -1,8 +1,11 @@
-@media (min-width: 1200px) {
-  .col-5-custom {
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
+.widget_categories2 ul li {
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.widget_categories2 ul li.active {
+  font-weight: 600;
+  color: #ff6b6b;
 }
 .ot-pagination ul {
   display: inline-flex;

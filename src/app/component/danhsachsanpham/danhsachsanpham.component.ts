@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
+import { environment } from '../../enviroments/enviroment';
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-danhsachsanpham',
   templateUrl: './danhsachsanpham.component.html',
-  styleUrl: './danhsachsanpham.component.css'
+  styleUrls: ['./danhsachsanpham.component.css']
 })
 export class DanhsachsanphamComponent implements OnInit {
 
@@ -15,12 +17,13 @@ export class DanhsachsanphamComponent implements OnInit {
   pageSize = 15;
   totalPages = 0;
 
-  visiblePages: (number | '...')[] = [];
-
   keyword = '';
   sort = 'newest';
 
-  constructor(private apiService: ApiService) { }
+  // 🔥 Base URL ảnh
+  mediaBaseUrl = environment.mediaUrl;
+
+  constructor(private apiService: ApiService,private cartService: CartService) { }
 
   ngOnInit() {
     this.loadData();
@@ -33,13 +36,23 @@ export class DanhsachsanphamComponent implements OnInit {
       skipCount: (this.page - 1) * this.pageSize,
       maxResultCount: this.pageSize
     }).subscribe(res => {
-      this.products = res.items;
-      this.total = res.totalCount;
 
+      this.products = res.items;
+
+      this.total = res.totalCount;
       this.totalPages = Math.ceil(this.total / this.pageSize);
-      this.buildPages();
     });
   }
+
+  // ================= IMAGE HELPER =================
+
+  getImageUrl(fileName: string): string {
+    return fileName
+      ? this.mediaBaseUrl + fileName
+      : 'assets/img/no-image.png';
+  }
+
+  // ================= SORT =================
 
   onSortChange(event: Event) {
     this.sort = (event.target as HTMLSelectElement).value;
@@ -47,28 +60,10 @@ export class DanhsachsanphamComponent implements OnInit {
     this.loadData();
   }
 
-  buildPages() {
-    const pages: (number | '...')[] = [];
+  // ================= PAGINATION =================
 
-    if (this.page > 3) {
-      pages.push(1, '...');
-    }
-
-    for (let i = Math.max(1, this.page - 2); i <= Math.min(this.totalPages, this.page + 2); i++) {
-      pages.push(i);
-    }
-
-    if (this.page < this.totalPages - 2) {
-      pages.push('...', this.totalPages);
-    }
-
-    this.visiblePages = pages;
-  }
-
-  changePage(p: number | '...') {
-    if (p === '...') return;
+  changePage(p: number) {
     if (p === this.page) return;
-
     this.page = p;
     this.loadData();
   }
@@ -86,6 +81,7 @@ export class DanhsachsanphamComponent implements OnInit {
       this.loadData();
     }
   }
+
   get fromItem(): number {
     return (this.page - 1) * this.pageSize + 1;
   }
@@ -93,8 +89,25 @@ export class DanhsachsanphamComponent implements OnInit {
   get toItem(): number {
     return Math.min(this.page * this.pageSize, this.total);
   }
+
   getTotalPagesArray(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
-}
 
+  addToCart(product: any): void {
+
+    const productToAdd = {
+      id: product.id,
+      ten: product.ten,
+      anh: product.anh,
+      gia: product.gia,
+      giaKhuyenMai: product.giaKhuyenMai,
+      slug: product.slug,
+      phanTramGiamGia: product.phanTramGiamGia,
+      tenQuaTang: product.quaTangGia > 0 ? product.quaTangTen : null,
+      giaQuaTang: product.quaTangGia > 0 ? product.quaTangGia : 0
+    };
+
+    this.cartService.addToCart(productToAdd);
+  }
+}

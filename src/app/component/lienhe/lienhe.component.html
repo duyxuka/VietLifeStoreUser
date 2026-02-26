@@ -53,14 +53,66 @@
             <div class="col-lg-8">
                 <div class="contact-form1">
                 <h4 class="contact-form-title">Liên hệ với chúng tôi</h4>
-                <form action="https://html.onertheme.com/babymart/mail.php" method="POST" class="input-label ajax-contact">
-                    <div class="row">
-                        <div class="form-group col-sm-6"><input type="text" class="form-control bg-white" placeholder="Tên của bạn" name="name" id="name" required=""></div>
-                        <div class="form-group col-sm-6"><input type="email" class="form-control bg-white" placeholder="Email của bạn" name="email" id="email" required=""></div>
-                        <div class="form-group col-12"><textarea name="message" id="message" cols="30" placeholder="Viết liên hệ của bạn" rows="3" class="form-control bg-white" required=""></textarea></div>
-                        <div class="form-btn col-12 mt-10"><button class="ot-btn">Gửi thông tin <i class="fas fa-arrow-right ms-2"></i></button></div>
+                <form [formGroup]="form" (ngSubmit)="submit()" class="input-label">
+
+                <div class="row">
+
+                    <div class="form-group col-sm-6">
+                    <input type="text"
+                            class="form-control bg-white"
+                            placeholder="Tên của bạn"
+                            formControlName="hoTen">
+
+                    <small class="text-danger"
+                            *ngIf="form.get('hoTen')?.touched && form.get('hoTen')?.invalid">
+                        Vui lòng nhập tên
+                    </small>
                     </div>
-                    <p class="form-messages mb-0 mt-3"></p>
+
+                    <div class="form-group col-sm-6">
+                    <input type="email"
+                            class="form-control bg-white"
+                            placeholder="Email của bạn"
+                            formControlName="email">
+
+                    <small class="text-danger"
+                            *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+                        Email không hợp lệ
+                    </small>
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                    <input type="text"
+                            class="form-control bg-white"
+                            placeholder="Số điện thoại"
+                            formControlName="soDienThoai">
+                        <small class="text-danger"
+                            *ngIf="form.get('soDienThoai')?.touched && form.get('soDienThoai')?.invalid">
+                            Số điện thoại không hợp lệ
+                        </small>
+                    </div>
+
+                    <div class="form-group col-12">
+                    <textarea cols="30"
+                                rows="3"
+                                class="form-control bg-white"
+                                placeholder="Viết liên hệ của bạn"
+                                formControlName="noiDung"></textarea>
+
+                    <small class="text-danger"
+                            *ngIf="form.get('noiDung')?.touched && form.get('noiDung')?.invalid">
+                        Vui lòng nhập nội dung
+                    </small>
+                    </div>
+
+                    <div class="form-btn col-12 mt-10">
+                    <button class="ot-btn" type="submit" [disabled]="isSubmitting">
+                        {{ isSubmitting ? 'Đang gửi...' : 'Gửi thông tin' }}
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    </div>
+
+                </div>
                 </form>
                 </div>
             </div>
@@ -69,5 +121,5 @@
     </div>
 </div>
 <div class="">
-    <div class="contact-map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3644.7310056272386!2d89.2286059153658!3d24.00527418490799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fe9b97badc6151%3A0x30b048c9fb2129bc!2sAngfuztheme!5e0!3m2!1sen!2sbd!4v1651028958211!5m2!1sen!2sbd" allowfullscreen="" loading="lazy"></iframe></div>
+    <div class="contact-map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0920864278974!2d105.79723561156705!3d21.02900108768803!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab43f83756ad%3A0x5c84a885f965e0e3!2zNDMzIMSQLiBOZ3V54buFbiBLaGFuZywgWcOqbiBIb8OgLCBD4bqndSBHaeG6pXksIEjDoCBO4buZaSAxMDAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1771924265619!5m2!1svi!2s" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 </div>

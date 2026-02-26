@@ -1,0 +1,53 @@
+.widget_categories ul li a.active {
+    background-color: #ff5584;
+    font-weight: 600;
+    color: #fff;
+}
+.widget_categories ul li span.active {
+    background-color: #ff5584;
+    font-weight: 600;
+    color: #fff;
+}
+.ot-pagination ul {
+  display: inline-flex;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Nút trang */
+.ot-pagination ul li a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f3f3f3;
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;              /* 👈 BÀN TAY */
+  transition: all 0.25s ease;
+}
+
+/* Hover */
+.ot-pagination ul li a:hover {
+  background: #ff5584;
+  color: #fff;
+}
+
+/* Trang active */
+.ot-pagination ul li a.active {
+  background: #ff5584;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Disabled */
+.ot-pagination ul li a.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}

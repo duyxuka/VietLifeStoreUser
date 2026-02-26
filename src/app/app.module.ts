@@ -23,6 +23,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DanhmucsanphamComponent } from './component/danhmucsanpham/danhmucsanpham.component';
 import { DanhmuccamnangComponent } from './component/danhmuccamnang/danhmuccamnang.component';
 import { FormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,15 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     CarouselModule,
     NgxPaginationModule,
-    FormsModule   
+    FormsModule,
+    ToastrModule.forRoot({
+      timeOut: 5000,
+      positionClass: 'toast-top-right',
+      closeButton: true,
+      progressBar: true,
+      tapToDismiss: true
+    }),
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimations(),

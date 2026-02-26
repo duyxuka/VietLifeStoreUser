@@ -15,11 +15,15 @@ export class ApiService {
   getAllBanner(): Observable<any> {
     return this.httpClient.get<any>(`${this.baseUrl}banners/all`);
   }
-  getListAll(): Observable<any[]> {
+  getDanhMucSPListAll(): Observable<any[]> {
     return this.httpClient.get<any[]>(`${this.baseUrl}danh-muc-san-phams/all`);
   }
 
-  getByDanhMuc(slug: string): Observable<any[]> {
+  getDanhMucCamNangListAll(): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.baseUrl}danh-muc-cam-nangs/all`);
+  }
+
+  getByDanhMucSP(slug: string): Observable<any[]> {
     return this.httpClient.get<any[]>(`${this.baseUrl}san-phams/by-danh-muc`, { params: { slug } });
   }
   getSanPhamBySlug(slug: string): Observable<any[]> {
@@ -62,23 +66,58 @@ export class ApiService {
       totalCount: number;
     }>(`${this.baseUrl}san-phams/filter`, { params });
   }
-  getImageSanPham(fileName: string): Observable<string> {
-    return this.httpClient.get(`${this.baseUrl}san-phams/image`, {
-      params: { fileName: fileName },
-      responseType: 'text'
-    });
+
+  getListFilterCamNang(filter: {
+    keyword?: string;
+    skipCount: number;
+    danhMucSlug?: string;
+    maxResultCount: number;
+  }): Observable<{
+    items: any[];
+    totalCount: number;
+  }> {
+
+    let params = new HttpParams()
+      .set('skipCount', filter.skipCount)
+      .set('maxResultCount', filter.maxResultCount);
+    if (filter.danhMucSlug) {
+      params = params.set('danhMucSlug', filter.danhMucSlug);
+    }
+
+    if (filter.keyword) {
+      params = params.set('keyword', filter.keyword);
+    }
+
+    return this.httpClient.get<{
+      items: any[];
+      totalCount: number;
+    }>(`${this.baseUrl}cam-nangs/filter`, { params });
   }
-  getImageBanner(fileName: string): Observable<string> {
-    return this.httpClient.get(`${this.baseUrl}banners/image`, {
-      params: { fileName: fileName },
-      responseType: 'text'
-    });
+  getCamNangBySlug(slug: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.baseUrl}cam-nangs/by-slug?slug=${slug}`);
   }
-  getImageCamNang(fileName: string): Observable<string> {
-    return this.httpClient.get(`${this.baseUrl}cam-nangs/image`, {
-      params: { fileName: fileName },
-      responseType: 'text'
-    });
+  getByDanhMucCamNang(slug: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.baseUrl}cam-nangs/by-danh-muc`, { params: { slug } });
   }
 
+  createLienHe(data: any): Observable<any> {
+    return this.httpClient.post<any>(
+      `${this.baseUrl}lien-hes`,
+      data
+    );
+  }
+
+  // ================= DANH MỤC CHÍNH SÁCH =================
+  getDanhMucChinhSachAll(): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}danh-muc-chinh-sachs/all`
+    );
+  }
+
+  // ================= CHÍNH SÁCH THEO DANH MỤC =================
+  getChinhSachByDanhMuc(danhMucId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}chinh-sachs/by-danh-muc-id/${danhMucId}`
+    );
+  }
 }

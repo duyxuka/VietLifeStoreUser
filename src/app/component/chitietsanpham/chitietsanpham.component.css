@@ -22,3 +22,37 @@
 .product-thumb.active {
     border-color: #ff4579;
 }
+.btn-active{
+    color: #fff;
+    background-color: #ff59a6;
+    border-color: #73b9ff;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+
+.product-grid {
+  height: 100%;
+}
+
+.product-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.gift-wrapper {
+  min-height: 28px;
+  /* Giữ chỗ cố định cho quà */
+}
+
+.gift-placeholder {
+  height: 24px;
+}
+
+.gift-product {
+  font-family: 'Source Sans 3';
+  color: #ff51a1;
+  margin-left: 6px;
+  font-size: 17px;
+  font-weight: 600;
+}

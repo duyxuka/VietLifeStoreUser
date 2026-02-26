@@ -3,7 +3,7 @@
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" data-cue="slideInUp">Đăng nhập</h1>
         <ul class="breadcumb-menu">
-            <li data-cue="slideInUp" data-delay="100"><a href="index.html">Trang chủ</a></li>
+            <li data-cue="slideInUp" data-delay="100"><a href="/">Trang chủ</a></li>
             <li data-cue="slideInUp" data-delay="100">Đăng nhập</li>
         </ul>
     </div>
@@ -13,15 +13,15 @@
     <div class="container">
     <div class="row">
         <div class="col-12">
-            <form action="#" class="woocommerce-form-login">
-                <div class="form-group"><label>Username or email *</label> <input type="text" class="form-control" placeholder="Username or email"></div>
-                <div class="form-group"><label>Password *</label> <input type="text" class="form-control" placeholder="Password"></div>
+            <form action="#" class="woocommerce-form-login" [formGroup]="form" (ngSubmit)="login()">
+                <div class="form-group"><label>Email hoặc SĐT *</label> <input type="text" class="form-control" formControlName="emailorphone" placeholder="Nhập Email hoặc SĐT"></div>
+                <div class="form-group"><label>Mật khẩu *</label> <input type="password" class="form-control" formControlName="password" placeholder="Nhập mật khẩu"></div>
                 <div class="form-group">
-                <div class="custom-checkbox"><input type="checkbox" id="remembermylogin"> <label for="remembermylogin">Remember Me</label></div>
                 </div>
                 <div class="form-group">
                 <button type="submit" class="ot-btn">Đăng nhập</button>
-                <p class="mt-3 mb-0"><a class="text-reset" href="#">Lost your password?</a></p>
+                <p class="mt-3 mb-0"><a class="text-reset" href="#">Quên mật khẩu?</a></p>
+                <p class="mt-3 mb-0"><a class="text-reset" href="/dangky">Chưa có tài khoản? Đăng ký ngay</a></p>
                 </div>
             </form>
         </div>

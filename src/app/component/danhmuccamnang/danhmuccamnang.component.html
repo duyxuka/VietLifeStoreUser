@@ -1,1 +1,104 @@
-<p>danhmuccamnang works!</p>
+<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+    <div class="container">
+    <div class="breadcumb-content">
+        <h1 class="breadcumb-title" data-cue="slideInUp">Danh mục cẩm nang</h1>
+        <ul class="breadcumb-menu">
+            <li data-cue="slideInUp" data-delay="100"><a href="/">Trang chủ</a></li>
+            <li data-cue="slideInUp" data-delay="100">Danh mục cẩm nang</li>
+        </ul>
+    </div>
+    </div>
+</div>
+<section class="ot-blog-wrapper space-top space-extra-bottom">
+    <div class="container">
+    <div class="row">
+        <div class="col-xxl-9 col-lg-8">
+            <div class="ot-blog blog-single has-post-thumbnail" *ngFor="let item of news" style="display: flex;">
+                <div class="blog-img">
+                    <a href="/chitietcamnang/{{item.slug}}"><img [src]="getImageUrl(item.anh)" alt="Blog Image"></a>
+                    <a href="blog.html" class="blog-cat">{{item.tenDanhMuc}}</a></div>
+                <div class="blog-content" style="margin-left: 25px;">
+                <div class="blog-meta">
+                    <a href="blog.html">
+                        <i class="far fa-calendar-days"></i>
+                        {{item.creationTime | date:'dd MMM, yyyy'}}
+                    </a>
+                    <a class="author" href="blog.html">
+                        <i class="far fa-user"></i>
+                        By AdminVietLifeStore
+                    </a>
+                </div>
+                <h2 class="blog-title">
+                    <a href="/chitietcamnang/{{item.slug}}">{{item.ten}}</a>
+                </h2>
+                <p class="blog-text">{{item.mota}}</p>
+                <a href="/chitietcamnang/{{item.slug}}" class="ot-btn">Xem thêm<i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+            <div class="ot-pagination text-center">
+                <ul>
+                    <!-- Previous -->
+                    <li>
+                    <a
+                        href="javascript:void(0)"
+                        [class.disabled]="page === 1"
+                        (click)="page > 1 && changePage(page - 1)">
+                        <i class="fa-regular fa-angle-left"></i>
+                    </a>
+                    </li>
+
+                    <!-- Page numbers -->
+                    <li *ngFor="let p of getTotalPagesArray()">
+                    <a
+                        href="javascript:void(0)"
+                        [class.active]="p === page"
+                        (click)="changePage(p)">
+                        {{ p }}
+                    </a>
+                    </li>
+
+                    <!-- Next -->
+                    <li>
+                    <a
+                        href="javascript:void(0)"
+                        [class.disabled]="page === totalPages"
+                        (click)="page < totalPages && changePage(page + 1)">
+                        <i class="fa-regular fa-angle-right"></i>
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+            <aside class="sidebar-area">
+                <div class="widget widget_search">
+                <form class="search-form" (ngSubmit)="onSearch()">
+                    <input 
+                        type="text" 
+                        placeholder="Tìm kiếm..."
+                        [(ngModel)]="keyword"
+                        name="keyword">
+                    <button type="submit">
+                        <i class="far fa-search"></i>
+                    </button>
+                </form>
+                </div>
+                <div class="widget widget_categories">
+                <h3 class="widget_title">Danh mục cẩm nang</h3>
+                <ul>
+                    <li *ngFor="let cat of categories">
+                        <a 
+                            href="javascript:void(0)" 
+                            (click)="onCategoryChange(cat.slug)"
+                            [class.active]="slug === cat.slug">
+                            {{cat.ten}}
+                        </a> 
+                        <span [class.active]="slug === cat.slug">({{cat.soLuongCamNang}})</span>
+                    </li>
+                </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+    </div>
+</section>

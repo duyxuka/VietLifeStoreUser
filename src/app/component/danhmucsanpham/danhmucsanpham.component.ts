@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../enviroments/enviroment';
 
 @Component({
   selector: 'app-danhmucsanpham',
@@ -22,6 +23,8 @@ export class DanhmucsanphamComponent implements OnInit {
 
   // Không dùng null
   slug?: string;
+  // 🔥 Base URL ảnh
+  mediaBaseUrl = environment.mediaUrl;
 
   constructor(
     private apiService: ApiService,
@@ -45,7 +48,7 @@ export class DanhmucsanphamComponent implements OnInit {
 
   // ================= LOAD DANH MỤC =================
   loadCategories(): void {
-    this.apiService.getListAll()
+    this.apiService.getDanhMucSPListAll()
       .subscribe(res => {
         this.categories = res;
       });
@@ -101,5 +104,41 @@ export class DanhmucsanphamComponent implements OnInit {
 
   getTotalPagesArray(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+  // ================= IMAGE HELPER =================
+
+  getImageUrl(fileName: string): string {
+    return fileName
+      ? this.mediaBaseUrl + fileName
+      : 'assets/img/no-image.png';
+  }
+
+  addToCart(product: any): void {
+
+    const productToAdd = {
+      id: product.id,
+      name: product.ten,
+      image: product.anh,
+      price: product.gia,
+      salePrice: product.giaKhuyenMai,
+      quantity: 1,
+      priceOrder: product.giaKhuyenMai > 0 ? product.giaKhuyenMai : product.gia,
+      slug: product.slug
+    };
+
+    // 🔥 Lấy giỏ hàng từ localStorage
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    const existingIndex = cart.findIndex((item: any) => item.id === productToAdd.id);
+
+    if (existingIndex !== -1) {
+      cart[existingIndex].quantity += 1;
+    } else {
+      cart.push(productToAdd);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    alert('Đã thêm vào giỏ hàng');
   }
 }

@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../enviroments/enviroment';
+import { CartService } from '../../cart.service';
+import { ToastrService } from 'ngx-toastr';
 
 // Định nghĩa các interface (có thể tách ra file riêng models/san-pham-dto.ts)
 interface ThuocTinhDto {
@@ -28,6 +31,7 @@ interface SanPhamDto {
   gia: number;
   giaKhuyenMai: number;
   danhMucId: string;
+  danhMucSlug: string;
   anh: string;                // base64
   anhPhu: string[];           // mảng base64
   thuTu: number;
@@ -37,6 +41,8 @@ interface SanPhamDto {
   trangThai: boolean;
   thuocTinhs: ThuocTinhDto[];
   bienThes: SanPhamBienTheDto[];
+  quaTangTen : string;
+  quaTangGia: number;
 }
 
 @Component({
@@ -48,7 +54,7 @@ export class ChitietsanphamComponent implements OnInit {
 
   slug?: string;
   product: SanPhamDto | null = null;
-
+  relatedProducts: any[] = [];
   images: string[] = [];
   mainImage: string = '';
 
@@ -59,11 +65,13 @@ export class ChitietsanphamComponent implements OnInit {
 
   loading = false;
   errorMessage: string | null = null;
-
+  mediaBaseUrl = environment.mediaUrl;
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private cartService: CartService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -85,12 +93,25 @@ export class ChitietsanphamComponent implements OnInit {
         this.product = res;
 
         // Xử lý ảnh
+        // Xử lý ảnh
         this.mainImage = res.anh || '';
-        this.images = res.anhPhu?.length ? res.anhPhu : [];
 
-        // Nếu không có ảnh phụ, dùng ảnh chính làm ảnh phụ duy nhất
-        if (this.images.length === 0 && this.mainImage) {
-          this.images = [this.mainImage];
+        // Gộp ảnh chính + ảnh phụ
+        this.images = [];
+
+        if (res.anh) {
+          this.images.push(res.anh);
+        }
+
+        if (res.anhPhu?.length) {
+          this.images.push(...res.anhPhu);
+        }
+        if (res.danhMucSlug) {
+          this.apiService
+            .getByDanhMucSP(res.danhMucSlug)
+            .subscribe((related) => {
+              this.relatedProducts = related;
+            });
         }
 
         this.loading = false;
@@ -169,32 +190,6 @@ export class ChitietsanphamComponent implements OnInit {
       : null;
   }
 
-  addToCart(): void {
-    if (!this.product) return;
-
-    // Kiểm tra nếu sản phẩm có thuộc tính thì phải chọn biến thể
-    if (this.product.thuocTinhs?.length > 0 && !this.selectedVariant) {
-      alert('Vui lòng chọn đầy đủ thuộc tính sản phẩm');
-      return;
-    }
-
-    const cartItem = {
-      sanPhamId: this.product.id,
-      bienTheId: this.selectedVariant?.id || null,
-      quantity: this.quantity,
-      tenSanPham: this.product.ten,
-      anh: this.mainImage,
-      gia: this.displayPrice,
-      // có thể thêm các field khác nếu cần
-    };
-
-    console.log('Thêm vào giỏ hàng:', cartItem);
-
-    // TODO: Gọi service để thêm vào giỏ hàng thực tế
-    // this.cartService.addToCart(cartItem);
-    alert('Đã thêm sản phẩm vào giỏ hàng!');
-  }
-
   increaseQty(): void {
     this.quantity++;
   }
@@ -212,5 +207,65 @@ export class ChitietsanphamComponent implements OnInit {
       return !!this.selectedVariant;
     }
     return true;
+  }
+  // ================= IMAGE HELPER =================
+
+  getImageUrl(fileName: string): string {
+    return fileName
+      ? this.mediaBaseUrl + fileName
+      : 'assets/img/no-image.png';
+  }
+
+  addToCart(): void {
+    if (!this.product) return;
+
+    // Nếu có thuộc tính thì bắt buộc chọn biến thể
+    if (this.product.thuocTinhs?.length > 0 && !this.selectedVariant) {
+      this.toastr.info("Vui lòng chọn đầy đủ thuộc tính sản phẩm")
+      return;
+    }
+
+    const isVariant = !!this.selectedVariant;
+
+    const gia = isVariant
+      ? this.selectedVariant!.gia
+      : this.product.gia;
+
+    const giaKhuyenMai = isVariant
+      ? this.selectedVariant!.giaKhuyenMai
+      : this.product.giaKhuyenMai;
+
+    const cartItem = {
+      id: this.product.id,
+      bienTheId: this.selectedVariant?.id || null,
+      ten: this.product.ten,
+      slug: this.product.slug,
+      anh: this.mainImage,
+      gia: gia,
+      giaKhuyenMai: giaKhuyenMai,
+      quantity: this.quantity,
+      thuocTinhDaChon: { ...this.selectedOptions },
+      quaTangTen: this.product.quaTangTen,
+      quaTangGia: this.product.quaTangGia
+    };
+
+    this.cartService.addToCart(cartItem);
+  }
+
+  addToCartProduct(product: any): void {
+
+    const productToAdd = {
+      id: product.id,
+      ten: product.ten,
+      anh: product.anh,
+      gia: product.gia,
+      giaKhuyenMai: product.giaKhuyenMai,
+      slug: product.slug,
+      phanTramGiamGia: product.phanTramGiamGia,
+      tenQuaTang: product.quaTangGia > 0 ? product.quaTangTen : null,
+      giaQuaTang: product.quaTangGia > 0 ? product.quaTangGia : 0
+    };
+
+    this.cartService.addToCart(productToAdd);
   }
 }

@@ -153,94 +153,46 @@
       </div>
     </div>
 </div>
-<div
-    class="sidemenu-wrapper sidemenu-cart">
-    <div
-      class="sidemenu-content">
-      <button
-          class="closeButton sideMenuCls"><i
-          class="far fa-times"></i></button>
-      <div
-          class="widget woocommerce widget_shopping_cart">
-          <h3
-            class="widget_title">Giỏ hàng</h3>
-          <div
-            class="widget_shopping_cart_content">
-            <ul
-                class="woocommerce-mini-cart cart_list product_list_widget">
-                <li
-                  class="woocommerce-mini-cart-item mini_cart_item"><a
-                  href="#"
-                  class="remove remove_from_cart_button"><i
-                  class="far fa-times"></i></a> <a
-                  href="#"><img
-                  src="assets/img/product/post-card1-1.png"
-                  alt="Cart Image">White One-Piece
-                  Dress</a> <span class="quantity">1 × <span
-                      class="woocommerce-Price-amount amount"><span
-                      class="woocommerce-Price-currencySymbol">$</span>940.00</span></span>
-                </li>
-                <li
-                  class="woocommerce-mini-cart-item mini_cart_item"><a
-                  href="#"
-                  class="remove remove_from_cart_button"><i
-                  class="far fa-times"></i></a> <a
-                  href="#"><img
-                  src="assets/img/product/post-card1-2.png"
-                  alt="Cart Image">Round New Red Toy</a>
-                  <span class="quantity">1 × <span
-                      class="woocommerce-Price-amount amount"><span
-                      class="woocommerce-Price-currencySymbol">$</span>899.00</span></span>
-                </li>
-                <li
-                  class="woocommerce-mini-cart-item mini_cart_item"><a
-                  href="#"
-                  class="remove remove_from_cart_button"><i
-                  class="far fa-times"></i></a> <a
-                  href="#"><img
-                  src="assets/img/product/post-card1-3.png"
-                  alt="Cart Image">The Playtime
-                  Excitement!</a> <span class="quantity">1 ×
-                  <span
-                      class="woocommerce-Price-amount amount"><span
-                      class="woocommerce-Price-currencySymbol">$</span>756.00</span></span>
-                </li>
-                <li
-                  class="woocommerce-mini-cart-item mini_cart_item"><a
-                  href="#"
-                  class="remove remove_from_cart_button"><i
-                  class="far fa-times"></i></a> <a
-                  href="#"><img
-                  src="assets/img/product/post-card1-4.png"
-                  alt="Cart Image">Brown Lather
-                  Carriage</a> <span class="quantity">1 ×
-                  <span
-                      class="woocommerce-Price-amount amount"><span
-                      class="woocommerce-Price-currencySymbol">$</span>723.00</span></span>
-                </li>
-                <li
-                  class="woocommerce-mini-cart-item mini_cart_item"><a
-                  href="#"
-                  class="remove remove_from_cart_button"><i
-                  class="far fa-times"></i></a> <a
-                  href="#"><img
-                  src="assets/img/product/post-card1-5.png"
-                  alt="Cart Image">Ultricies At Torquent
-                  Dui</a> <span class="quantity">1 × <span
-                      class="woocommerce-Price-amount amount"><span
-                      class="woocommerce-Price-currencySymbol">$</span>1080.00</span></span>
-                </li>
+<div class="sidemenu-wrapper sidemenu-cart">
+    <div class="sidemenu-content">
+      <button class="closeButton sideMenuCls"><i class="far fa-times"></i></button>
+      <div class="widget woocommerce widget_shopping_cart">
+          <h3 class="widget_title">Giỏ hàng</h3>
+          <div class="widget_shopping_cart_content">
+            <ul class="woocommerce-mini-cart cart_list product_list_widget">
+              <li *ngIf="cartItems.length === 0" class="text-center p-3">
+                Giỏ hàng trống
+              </li>
+              <li *ngFor="let item of cartItems" class="woocommerce-mini-cart-item mini_cart_item">
+                <a href="javascript:void(0)"
+                  class="remove remove_from_cart_button"
+                  (click)="removeItem(item.id, item.bienTheId)">
+                  <i class="far fa-times"></i>
+                </a>
+                <a href="chitietsanpham/{{ item.slug }}">
+                  <img [src]="getImageUrl(item.anh)" alt="Cart Image">
+                  {{ item.ten }}
+                </a>
+                <span class="quantity">
+                  {{ item.quantity }} ×
+                  <span class="woocommerce-Price-amount amount">
+                    {{ item.giaKhuyenMai > 0 ? item.giaKhuyenMai : item.gia | number }}
+                  </span>
+                </span>
+                <div *ngIf="item.thuocTinhDaChon">
+                  <small *ngFor="let attr of item.thuocTinhDaChon | keyvalue">
+                    {{attr.key}}: {{attr.value}}
+                  </small>
+                </div>
+              </li>
             </ul>
             <p
-                class="woocommerce-mini-cart__total total"><strong>Subtotal:</strong>
-                <span class="woocommerce-Price-amount amount"><span
-                  class="woocommerce-Price-currencySymbol">$</span>4398.00</span>
+                class="woocommerce-mini-cart__total total"><strong>Tổng tiền:</strong>
+                <span class="woocommerce-Price-amount amount">{{ totalPrice | number }} đ</span>
             </p>
-            <p
-                class="woocommerce-mini-cart__buttons buttons"><a
-                href="cart.html" class="ot-btn wc-forward">View
-                cart</a> <a href="checkout.html"
-                  class="ot-btn checkout wc-forward">Checkout</a>
+            <p class="woocommerce-mini-cart__buttons buttons">
+              <a href="/giohang" class="ot-btn wc-forward">Xem giỏ hàng</a> 
+              <a href="/thanhtoan" class="ot-btn checkout wc-forward">Thanh toán</a>
             </p>
           </div>
       </div>
@@ -380,9 +332,18 @@
                         class="fal fa-comments-question"></i>
                         <a href="/lienhe">Liên hệ</a>
                       </li>
-                      <li><i
-                        class="fal fa-user"></i> <a
+                      <li *ngIf="!currentUserName">
+                        <i class="fal fa-user"></i> <a
                         href="/dangnhap">Đăng nhập</a></li>
+                      <li *ngIf="currentUserName" class="user-dropdown">
+                        <i class="fal fa-user"></i> <a
+                        href="/thongtincanhan">Xin chào: {{ currentUserName }} <i class="fa-sharp fa-solid fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a (click)="logout()" style="cursor:pointer">Đăng xuất</a>
+                          </li>
+                        </ul>
+                      </li>
                   </ul>
                 </div>
             </div>
@@ -415,26 +376,15 @@
                             class="menu-item-has-children">
                             <a href="/danhsachsanpham">Sản phẩm</a>
                             <ul class="sub-menu">
-                              <li *ngFor="let dm of danhMucs"><a href="/danhmucsanpham/{{dm.slug}}">{{dm.ten}}</a></li>
+                              <li *ngFor="let dm of danhMucsSP"><a href="/danhmucsanpham/{{dm.slug}}">{{dm.ten}}</a></li>
                             </ul>
                         </li>
                         
                         <li
                             class="menu-item-has-children">
-                            <a
-                              href="#">Cẩm nang</a>
-                            <ul
-                              class="sub-menu">
-                              <li><a
-                                  href="/danhsachcamnang">Danh sách cẩm nang</a></li>
-                              <li><a
-                                  href="blog-grid.html">Blog
-                                  Grid
-                                  Style</a>
-                              </li>
-                              <li><a
-                                  href="/chitietcamnang">Chi tiết cẩm nang</a>
-                              </li>
+                            <a href="/danhsachcamnang">Cẩm nang</a>
+                            <ul class="sub-menu">
+                              <li *ngFor="let dm of danhMucsCN"><a href="/danhmuccamnang/{{dm.slug}}">{{dm.ten}}</a></li>
                             </ul>
                         </li>
                         <li><a
@@ -464,7 +414,7 @@
                       </form>
                       <button type="button"
                         class="icon-btn sideMenuCart"><span
-                        class="badge">5</span> <i
+                        class="badge">{{ totalQuantity }}</span> <i
                         class="far fa-basket-shopping"></i></button>
                       <button type="button"
                         class="icon-btn sideMenuInfo d-none d-lg-block"><i

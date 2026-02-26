@@ -9,7 +9,7 @@
       <div class="hero-inner">
         <div class="container">
           <div class="hero-wrap1"
-               [style.backgroundImage]="'url(' + getImageBanner(banner.anh) + ')'">
+               [style.backgroundImage]="'url(' + getImageUrl(banner.anh) + ')'">
 
             <div class="hero-style1">
               <span class="sub-title">
@@ -168,7 +168,7 @@
                     class="ot-product product-grid bg-white" >
                     <div
                         class="product-img">
-                        <img [src]="getImageSanPham(sp.anh)" alt="Product Image"> 
+                        <img [src]="getImageUrl(sp.anh)" alt="Product Image">
                         <span class="product-tag" *ngIf="sp.phanTramGiamGia">-{{sp.phanTramGiamGia}}%</span>
                         <div
                             class="actions"><a
@@ -278,10 +278,9 @@
                 <div class="col-xxl-6 col-xl-12 col-lg-6" *ngFor="let spbc of sanPhamsbanchay">
                     <div
                         class="ot-product list-view style-border">
-                        <div
-                            class="product-img"><img
-                            [src]="getImageSanPham(spbc.anh) || 'assets/img/product/post-card1-8.png'"
-                            alt="Product Image"></div>
+                        <div class="product-img">
+                            <img [src]="getImageUrl(spbc.anh)" alt="Product Image">
+                        </div>
                         <div
                             class="product-content">
                             <h3
@@ -418,11 +417,11 @@
     <div
         class="row gy-4 justify-content-center">
         <div class="col-xxl-3 col-xl-4 col-md-6" *ngFor="let cn of camNangMoiNhat">
-            <div
-                class="blog-card style2">
-                <div
-                class="blog-img"><img [src]="getImageCamNang(cn.anh)" alt="Blog Image"> <span
-                class="blog-tag">Activities</span></div>
+            <div class="blog-card style2">
+                <div class="blog-img">
+                    <img [src]="getImageUrl(cn.anh)" alt="Blog Image"> 
+                    <span class="blog-tag">Activities</span>
+                </div>
                 <div
                 class="blog-content">
                 <div class="blog-meta"><a

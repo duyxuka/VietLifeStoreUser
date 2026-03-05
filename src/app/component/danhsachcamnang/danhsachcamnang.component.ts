@@ -39,9 +39,7 @@ export class DanhsachcamnangComponent implements OnInit {
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 
   // ================= PAGINATION =================

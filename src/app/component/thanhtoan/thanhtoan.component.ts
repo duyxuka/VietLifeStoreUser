@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../cart.service';
 import { environment } from '../../enviroments/enviroment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '../../api.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-thanhtoan',
@@ -20,13 +22,15 @@ export class ThanhtoanComponent {
   checkoutForm!: FormGroup;
   paymentMethod = 'VNPAY';
   mediaBaseUrl = environment.mediaUrl;
-
+  userId = this.aushService.getUserIdFromToken();
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cartService: CartService,
     private http: HttpClient,
     private toastr: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private aushService: AuthService
   ) { }
 
   ngOnInit() {
@@ -103,6 +107,7 @@ export class ThanhtoanComponent {
     const formValue = this.checkoutForm.value;
 
     const order = {
+      taiKhoanKhachHangId: this.userId,
       ten: formValue.ten,
       email: formValue.email,
       soDienThoai: formValue.soDienThoai,
@@ -113,8 +118,8 @@ export class ThanhtoanComponent {
       tongTien: this.finalTotal,
       chiTietDonHangs: this.cartItems.map(item => ({
         sanPhamId: item.id,
-        sanPhamBienThe: item.bienTheId,
-        quaTang: item.quaTangTen,
+        sanPhamBienThe: JSON.stringify(item.thuocTinhDaChon) || '',
+        quaTang: item.quaTangTen || '',
         soLuong: item.quantity,
         gia: item.giaKhuyenMai > 0 ? item.giaKhuyenMai : item.gia,
         giamGiaVoucher: this.discount / this.cartItems.length,
@@ -122,7 +127,7 @@ export class ThanhtoanComponent {
       }))
     };
 
-    this.http.post('/api/app/don-hangs', order)
+    this.apiService.createDonHang(order)
       .subscribe({
         next: () => {
           this.toastr.success("Đặt hàng thành công");
@@ -137,8 +142,9 @@ export class ThanhtoanComponent {
   }
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
+  }
+  get totalQuantity() {
+    return this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
   }
 }

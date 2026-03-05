@@ -23,9 +23,7 @@ export class GiohangComponent implements OnInit {
   }
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 
   removeItem(id: string, bienTheId: string | null) {

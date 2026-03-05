@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import { finalize, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-dangky',
@@ -18,7 +19,7 @@ export class DangkyComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -51,28 +52,28 @@ export class DangkyComponent {
       phoneNumber: value.phoneNumber
     };
 
-    this.authService.register(registerData).subscribe({
-      next: () => {
+    this.authService.register(registerData).pipe(
+      switchMap(() =>
+        this.authService.login(value.email, value.password)
+      ),
+      finalize(() => this.isLoading = false)
+    )
+      .subscribe({
+        next: (res: any) => {
 
-        // 🔥 Đăng ký thành công → login luôn
-        this.authService.login(value.email, value.password).subscribe({
-          next: (res: any) => {
+          // ✅ Dùng AuthService thay vì localStorage trực tiếp
+          this.authService.saveTokens(
+            res.access_token,
+            res.refresh_token
+          );
 
-            localStorage.setItem('access_token', res.access_token);
-            localStorage.setItem('refresh_token', res.refresh_token);
-
-            this.router.navigate(['/']);
-          },
-          error: () => {
-            this.errorMessage = 'Đăng nhập tự động thất bại';
-          }
-        });
-
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.error?.message || 'Đăng ký thất bại';
-        this.isLoading = false;
-      }
-    });
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          this.errorMessage =
+            err?.error?.error?.message ||
+            'Đăng ký hoặc đăng nhập thất bại';
+        }
+      });
   }
 }

@@ -73,8 +73,6 @@ export class ChitietcamnangComponent implements OnInit {
   }
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 }

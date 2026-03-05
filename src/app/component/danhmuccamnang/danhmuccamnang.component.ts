@@ -84,7 +84,7 @@ export class DanhmuccamnangComponent implements OnInit {
   }
 
   // ================= PAGING =================
-  changePage(p: number): void {
+  changePage(p: any): void {
     if (p === this.page) return;
     this.page = p;
     this.loadData();
@@ -98,14 +98,46 @@ export class DanhmuccamnangComponent implements OnInit {
     return Math.min(this.page * this.pageSize, this.total);
   }
 
-  getTotalPagesArray(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  getVisiblePages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+
+    const maxVisible = 3;
+    const half = Math.floor(maxVisible / 2);
+
+    let start = Math.max(1, this.page - half);
+    let end = Math.min(this.totalPages, start + maxVisible - 1);
+
+    // Nếu chưa đủ 5 trang thì lùi lại
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    // Nếu có trang trước đó → thêm 1 + ...
+    if (start > 1) {
+      pages.push(1);
+      if (start > 2) {
+        pages.push('...');
+      }
+    }
+
+    // Các trang chính
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Nếu còn trang phía sau → thêm ... + trang cuối
+    if (end < this.totalPages) {
+      if (end < this.totalPages - 1) {
+        pages.push('...');
+      }
+      pages.push(this.totalPages);
+    }
+
+    return pages;
   }
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 }

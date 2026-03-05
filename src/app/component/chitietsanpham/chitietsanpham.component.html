@@ -112,15 +112,16 @@
         <div class="swiper ot-slider has-shadow" id="productSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"3"},"1400":{"slidesPerView":"5"}}}'>
             <div class="swiper-wrapper">
                 <div class="swiper-slide" *ngFor="let item of relatedProducts">
-                    <div class="ot-product product-grid style2 d-flex flex-column h-100" >
+                    <div class="ot-product product-grid bg-white d-flex flex-column h-100" >
                         <div class="product-img">
-                            <img [src]="getImageUrl(item.anh)" alt="Product Image"> <span class="product-tag" *ngIf="item.giaKhuyenMai">-{{item.phanTramGiamGia}}%</span>
+                            <img [src]="getImageUrl(item.anh)" alt="Product Image"> 
+                            <span class="product-tag" *ngIf="item.phanTramGiamGia">-{{item.phanTramGiamGia}}%</span>
                             <div class="actions">
                                 <a href="chitietsanpham/{{ item.slug }}" class="icon-btn popup-content"><i class="far fa-eye"></i></a>
                             </div>
                         </div>
-                        <div class="product-content d-flex flex-column flex-grow-1">
-                            <h3 class="box-title"><a href="chitietsanpham/{{ item.slug }}">{{item.ten}}</a></h3>
+                        <div class="product-content">
+                            <h3 class="box-title"><a href="chitietsanpham/{{ item.slug }}" [title]="item.ten">{{ item.ten }}</a></h3>
                             <div class="woocommerce-product-rating" style="margin: 0;">
                                 <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5" style="margin: 0;"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
                             </div>
@@ -133,11 +134,15 @@
                                 </div>
 
                                 <ng-template #emptyGift>
-                                    <div class="gift-placeholder"></div>
+                                    <div class="gift-alt">
+                                        <i class="fa-regular fa-truck-bolt" style="margin-right: 7px;"></i>
+                                        <span>Miễn phí vận chuyển</span>
+                                    </div>
                                 </ng-template>
                             </div>
-                            <a *ngIf="!item.hasVariants" class="ot-btn" href="javascript:void(0)" (click)="addToCartProduct(item)"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
-                            <a *ngIf="item.hasVariants" class="ot-btn" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
+                            <div [innerHTML]="item.moTaNgan"></div>
+                            <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100" href="javascript:void(0)" (click)="addToCartProduct(item)" style="font-size: 15px;"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
+                            <a *ngIf="item.hasVariants" class="ot-btn style7 w-100" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
                         </div>
                     </div>
                 </div>

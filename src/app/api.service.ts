@@ -120,4 +120,17 @@ export class ApiService {
       `${this.baseUrl}chinh-sachs/by-danh-muc-id/${danhMucId}`
     );
   }
+  getTikTokVideos(section: string = 'HomePage'): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}social-videos/by-section`,
+      { params: { section } }
+    );
+  }
+
+  createDonHang(data: any): Observable<any> {
+    return this.httpClient.post<any>(
+      `${this.baseUrl}don-hangs`,
+      data
+    );
+  }
 }

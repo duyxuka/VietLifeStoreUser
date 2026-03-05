@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { ApiService } from '../../api.service';
 import { environment } from '../../enviroments/enviroment';
+import { DomSanitizer } from '@angular/platform-browser';
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-trangchu',
@@ -14,6 +16,7 @@ export class TrangchuComponent implements OnInit {
   sanPhams: any[] = [];
   sanPhamsbanchay: any[] = [];
   camNangMoiNhat: any[] = [];
+  tiktokVideos: any[] = [];
 
   selectedDanhMuc: any = null;
   thumbnailLeft: string | null = null;
@@ -38,14 +41,27 @@ export class TrangchuComponent implements OnInit {
       1024: { items: 1, nav: true, dots: false }
     }
   };
+  videoOptions: OwlOptions = {
+    loop: true,
+    autoplay: false,
+    margin: 20,
+    nav: true,
+    dots: false,
+    responsive: {
+      0: { items: 1 },
+      768: { items: 2 },
+      1200: { items: 3 }
+    }
+  };
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer,private cartService: CartService) { }
 
   ngOnInit(): void {
     this.loadDanhMuc();
     this.loadBanner();
     this.selectSanPhamBanChay();
     this.selectCamNangMoiNhat();
+    // this.loadTikTokVideos();
   }
 
   // ================= LOAD DATA =================
@@ -96,9 +112,36 @@ export class TrangchuComponent implements OnInit {
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
+  // getTikTokEmbedUrl(videoId: string): string {
+  //   // Hoặc thêm query param nếu muốn tùy chỉnh: ?music_info=1&description=1
+  //   return this.sanitizer.bypassSecurityTrustResourceUrl(
+  //     `https://www.tiktok.com/player/v1/${videoId}`
+  //   ) as string;
+  // }
+  // loadTikTokVideos(): void {
+  //   this.apiService.getTikTokVideos('HomePage')
+  //     .subscribe(res => {
+  //       this.tiktokVideos = res || [];
+  //     });
+  // }
 
+
+  addToCart(product: any): void {
+
+    const productToAdd = {
+      id: product.id,
+      ten: product.ten,
+      anh: product.anh,
+      gia: product.gia,
+      giaKhuyenMai: product.giaKhuyenMai,
+      slug: product.slug,
+      phanTramGiamGia: product.phanTramGiamGia,
+      tenQuaTang: product.quaTangGia > 0 ? product.quaTangTen : null,
+      giaQuaTang: product.quaTangGia > 0 ? product.quaTangGia : 0
+    };
+
+    this.cartService.addToCart(productToAdd);
+  }
 }

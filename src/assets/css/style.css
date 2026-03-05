@@ -5549,7 +5549,7 @@ a.text-theme:hover,
 	}
 }
 
-[data-cue="slideInUp"],
+[],
 [data-cues="slideInUp"]>* {
 	opacity: 0
 }

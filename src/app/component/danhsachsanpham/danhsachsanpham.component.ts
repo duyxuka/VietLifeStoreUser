@@ -38,7 +38,6 @@ export class DanhsachsanphamComponent implements OnInit {
     }).subscribe(res => {
 
       this.products = res.items;
-
       this.total = res.totalCount;
       this.totalPages = Math.ceil(this.total / this.pageSize);
     });
@@ -47,9 +46,7 @@ export class DanhsachsanphamComponent implements OnInit {
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 
   // ================= SORT =================

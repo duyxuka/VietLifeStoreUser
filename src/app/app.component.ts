@@ -14,6 +14,13 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   title = 'BabyStore';
+
+  isMobileMenuOpen = false;
+  isCartOpen = false;
+  isInfoOpen = false;
+  isProductMenuOpen = false;
+  isCamNangMenuOpen = false;
+
   danhMucsSP: any[] = [];
   danhMucsCN: any[] = [];
   cartItems: any[] = [];
@@ -22,6 +29,11 @@ export class AppComponent implements OnInit {
   mediaBaseUrl = environment.mediaUrl;
   isBrowser = false;
   currentUserName: string | null = null;
+
+  searchKeyword: string = '';
+  searchResults: any[] = [];
+  showDropdown = false;
+  searchTimeout: any;
 
   constructor(private apiService: ApiService, private cartService: CartService,
     @Inject(PLATFORM_ID) private platformId: Object, private authService: AuthService,
@@ -60,9 +72,7 @@ export class AppComponent implements OnInit {
     });
   }
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
   removeItem(id: string, bienTheId: string | null) {
     this.cartService.removeFromCart(id, bienTheId);
@@ -83,5 +93,54 @@ export class AppComponent implements OnInit {
     this.authService.logout();
     this.currentUserName = null; // nếu bạn đang hiển thị tên user
     this.router.navigate(['/dangnhap']);
+  }
+  onSearchChange() {
+    clearTimeout(this.searchTimeout);
+
+    if (!this.searchKeyword || this.searchKeyword.length < 2) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.apiService.getListFilterSanPham({
+        keyword: this.searchKeyword,
+        skipCount: 0,
+        maxResultCount: 5
+      }).subscribe(res => {
+        this.searchResults = res.items || [];
+      });
+    }, 400); // debounce 400ms
+  }
+  goToProduct() {
+    this.showDropdown = false;
+    this.searchKeyword = '';
+    this.searchResults = [];
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  toggleCart() {
+    this.isCartOpen = !this.isCartOpen;
+  }
+
+  toggleInfo() {
+    this.isInfoOpen = !this.isInfoOpen;
+  }
+
+  toggleProductMenu() {
+    this.isProductMenuOpen = !this.isProductMenuOpen;
+  }
+
+  toggleCamNangMenu() {
+    this.isCamNangMenuOpen = !this.isCamNangMenuOpen;
+  }
+
+  closeAllMenus() {
+    this.isMobileMenuOpen = false;
+    this.isCartOpen = false;
+    this.isInfoOpen = false;
   }
 }

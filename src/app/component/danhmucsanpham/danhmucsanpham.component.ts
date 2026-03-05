@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../enviroments/enviroment';
+import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-danhmucsanpham',
@@ -29,7 +31,8 @@ export class DanhmucsanphamComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   // ================= INIT =================
@@ -108,13 +111,11 @@ export class DanhmucsanphamComponent implements OnInit {
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
-    return fileName
-      ? this.mediaBaseUrl + fileName
-      : 'assets/img/no-image.png';
+    return fileName ? this.mediaBaseUrl + fileName : '';
   }
 
   addToCart(product: any): void {
-
+     if (!isPlatformBrowser(this.platformId)) return;
     const productToAdd = {
       id: product.id,
       name: product.ten,
@@ -125,7 +126,6 @@ export class DanhmucsanphamComponent implements OnInit {
       priceOrder: product.giaKhuyenMai > 0 ? product.giaKhuyenMai : product.gia,
       slug: product.slug
     };
-
     // 🔥 Lấy giỏ hàng từ localStorage
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 

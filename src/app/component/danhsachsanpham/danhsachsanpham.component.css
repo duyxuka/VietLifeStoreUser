@@ -49,30 +49,3 @@
   pointer-events: none;
   cursor: not-allowed;
 }
-
-.product-grid {
-  height: 100%;
-}
-
-.product-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.gift-wrapper {
-  min-height: 28px;
-  /* Giữ chỗ cố định cho quà */
-}
-
-.gift-placeholder {
-  height: 24px;
-}
-
-.gift-product {
-  font-family: 'Source Sans 3';
-  color: #ff51a1;
-  margin-left: 6px;
-  font-size: 17px;
-  font-weight: 600;
-}

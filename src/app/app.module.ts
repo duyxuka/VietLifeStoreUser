@@ -11,13 +11,12 @@ import { ThanhtoanComponent } from './component/thanhtoan/thanhtoan.component';
 import { LienheComponent } from './component/lienhe/lienhe.component';
 import { DanhsachcamnangComponent } from './component/danhsachcamnang/danhsachcamnang.component';
 import { ChitietcamnangComponent } from './component/chitietcamnang/chitietcamnang.component';
-import { TimkiemsanphamComponent } from './component/timkiemsanpham/timkiemsanpham.component';
 import { DangnhapComponent } from './component/dangnhap/dangnhap.component';
 import { DangkyComponent } from './component/dangky/dangky.component';
 import { ChinhsachComponent } from './component/chinhsach/chinhsach.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import {NgxPaginationModule} from 'ngx-pagination';
-import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DanhmucsanphamComponent } from './component/danhmucsanpham/danhmucsanpham.component';
@@ -25,6 +24,9 @@ import { DanhmuccamnangComponent } from './component/danhmuccamnang/danhmuccamna
 import { FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+import { ThongtincanhanComponent } from './component/thongtincanhan/thongtincanhan.component';
+import { authInterceptor } from './auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -37,12 +39,13 @@ import { ReactiveFormsModule } from '@angular/forms';
     LienheComponent,
     DanhsachcamnangComponent,
     ChitietcamnangComponent,
-    TimkiemsanphamComponent,
     DangnhapComponent,
     DangkyComponent,
     ChinhsachComponent,
     DanhmucsanphamComponent,
-    DanhmuccamnangComponent
+    DanhmuccamnangComponent,
+    ResetPasswordComponent,
+    ThongtincanhanComponent
   ],
   imports: [
     BrowserModule,
@@ -62,8 +65,11 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [
     provideAnimations(),
-    provideClientHydration(),
-    provideHttpClient(withFetch())
+    // provideClientHydration(),
+    provideHttpClient(
+    withFetch(),
+    withInterceptors([authInterceptor])
+  )
   ],
   bootstrap: [AppComponent],
 })

@@ -27,6 +27,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { ThongtincanhanComponent } from './component/thongtincanhan/thongtincanhan.component';
 import { authInterceptor } from './auth.interceptor';
+import { PaymentComponent } from './component/payment/payment.component';
+import { DathangthanhcongComponent } from './component/dathangthanhcong/dathangthanhcong.component';
+import { NumberShortPipe } from './number-short.pipe';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,9 @@ import { authInterceptor } from './auth.interceptor';
     DanhmucsanphamComponent,
     DanhmuccamnangComponent,
     ResetPasswordComponent,
-    ThongtincanhanComponent
+    ThongtincanhanComponent,
+    PaymentComponent,
+    DathangthanhcongComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +66,8 @@ import { authInterceptor } from './auth.interceptor';
       progressBar: true,
       tapToDismiss: true
     }),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NumberShortPipe
   ],
   providers: [
     provideAnimations(),

@@ -1,4 +1,4 @@
-.khuyendung{
+.khuyendung {
     display: inline-block;
     padding: .35em .65em;
     font-weight: 700;
@@ -10,4 +10,75 @@
     border-radius: .25rem;
     background-color: #ed0676 !important;
     font-size: 11px;
+}
+
+.voucher-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px dashed #ff4d4f;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #fff7f7;
+}
+
+.voucher-input {
+    display: flex;
+    gap: 10px;
+}
+
+.selected-voucher {
+    background: #f6ffed;
+    padding: 10px;
+    border: 1px solid #b7eb8f;
+    border-radius: 6px;
+}
+
+/* nút áp dụng voucher trong input */
+.btn-voucher {
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    height: 55px;
+}
+
+/* hover */
+.btn-voucher:hover {
+    background: #e53935;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* nút áp dụng trong danh sách voucher */
+.btn-voucherapply {
+    background: #ffffff;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+/* hover */
+.btn-voucherapply:hover {
+    background: #ff4d4f;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.voucher-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }

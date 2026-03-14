@@ -16,7 +16,7 @@
             <div class="blog-card style2" >
                 <div class="blog-img"><img [src]="getImageUrl(item.anh)" alt="blog image"> <span class="blog-tag">{{item.tenDanhMuc}}</span></div>
                 <div class="blog-content">
-                <div class="blog-meta"><a href="blog.html"><i class="far fa-calendar-days"></i>{{item.creationTime | date:'dd MMM, yyyy'}}</a> <a href="blog.html"><i class="far fa-user"></i>Admin VietLifeStore</a></div>
+                <div class="blog-meta"><a href="/chitietcamnang/{{item.slug}}"><i class="far fa-calendar-days"></i>{{item.creationTime | date:'dd MMM, yyyy'}}</a> <a href="/chitietcamnang/{{item.slug}}"><i class="far fa-user"></i>Admin VietLifeStore</a></div>
                 <h3 class="box-title"><a href="/chitietcamnang/{{item.slug}}">{{item.ten}}</a></h3>
                 <a href="/chitietcamnang/{{item.slug}}" class="link-btn">Xem thêm<i class="fas fa-arrow-right"></i></a>
                 </div>

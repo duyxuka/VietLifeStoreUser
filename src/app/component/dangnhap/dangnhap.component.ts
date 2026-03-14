@@ -1,28 +1,30 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../auth.service';
-import { Router } from '@angular/router';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dangnhap',
-  templateUrl: './dangnhap.component.html'
+  templateUrl: './dangnhap.component.html',
+  styleUrls: ['./dangnhap.component.css']
 })
 export class DangnhapComponent {
 
   showForgot = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
+    private toastr: ToastrService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   form = this.fb.group({
-    emailorphone: ['', Validators.required],
-    password: ['', Validators.required],
+    emailorphone: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
     forgotEmail: ['']
   });
 
@@ -47,7 +49,7 @@ export class DangnhapComponent {
         },
         error: (err) => {
           console.error(err);
-          alert("Sai tài khoản hoặc mật khẩu");
+          this.toastr.error("Sai tài khoản hoặc mật khẩu", "Lỗi");
         }
       });
   }
@@ -60,21 +62,24 @@ export class DangnhapComponent {
     const email = this.form.get('forgotEmail')?.value;
 
     if (!email) {
-      alert("Vui lòng nhập email");
+      this.toastr.error("Vui lòng nhập email", "Lỗi");
       return;
     }
 
     this.authService.forgotPassword(email.trim())
       .subscribe({
         next: () => {
-          alert("Vui lòng kiểm tra email để đặt lại mật khẩu");
+          this.toastr.success("Vui lòng kiểm tra email để đặt lại mật khẩu", "Thành công");
           this.showForgot = false;
           this.form.patchValue({ forgotEmail: '' });
         },
         error: err => {
           console.log(err);
-          alert(err.error?.error?.message || "Có lỗi xảy ra");
+          this.toastr.error("Có lỗi xảy ra", "Lỗi");
         }
       });
+  }
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 }

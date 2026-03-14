@@ -37,3 +37,36 @@
 .ot-btn.style7 {
     color: #FE5A86;
 }
+.blog-cat{
+    right: 20px !important;
+    left: unset !important;
+}
+.blog-tag{
+    right: 20px !important;
+    left: unset !important;
+}
+.zalo-chat-widget{
+    bottom: 89px !important; right: 27px !important;
+}
+
+.blog-card.style2 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card .blog-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.blog-card .box-title {
+    min-height: 56px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.blog-card .link-btn {
+    margin-top: auto;
+}

@@ -14,7 +14,8 @@ export class DangkyComponent {
   form!: FormGroup;
   isLoading = false;
   errorMessage = '';
-
+  showPassword = false;
+  showConfirmPassword = false;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -25,10 +26,10 @@ export class DangkyComponent {
     this.form = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{9,11}$')]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-    });
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
   }
 
   register() {
@@ -75,5 +76,13 @@ export class DangkyComponent {
             'Đăng ký hoặc đăng nhập thất bại';
         }
       });
+  }
+  passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    if (password !== confirm) {
+      return { passwordMismatch: true };
+    }
+    return null;
   }
 }

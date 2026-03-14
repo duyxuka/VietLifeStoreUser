@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,7 +20,8 @@ export class ResetPasswordComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   form = this.fb.group({
@@ -36,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
     if (this.form.invalid) return;
 
     if (this.form.value.newPassword !== this.form.value.confirmPassword) {
-      alert("Mật khẩu không khớp");
+      this.toastr.error("Mật khẩu không khớp", "Lỗi");
       return;
     }
 
@@ -53,7 +55,7 @@ export class ResetPasswordComponent implements OnInit {
       },
       error: err => {
         this.loading = false;
-        alert(err.error?.error?.message || "Token không hợp lệ hoặc đã hết hạn");
+        this.toastr.error(err.error?.error?.message || "Token không hợp lệ hoặc đã hết hạn", "Lỗi");
       }
     });
   }

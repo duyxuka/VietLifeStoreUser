@@ -16,30 +16,27 @@
                 <div class="ot-blog blog-single has-post-thumbnail"
                     *ngFor="let item of news" style="display: flex;">
                     <div class="blog-img">
-                        <a href="/chitietcamnang/{{item.slug}}"><img
-                                [src]="getImageUrl(item.anh)"
-                                alt="Blog Image"></a>
-                        <a href="blog.html"
-                            class="blog-cat">{{item.tenDanhMuc}}</a></div>
+                        <a href="/chitietcamnang/{{item.slug}}">
+                            <img [src]="getImageUrl(item.anh)" alt="Blog Image">
+                        </a>
+                        <a href="/chitietcamnang/{{item.slug}}" class="blog-cat">{{item.tenDanhMuc}}</a>
+                    </div>
                     <div class="blog-content" style="margin-left: 25px;">
                         <div class="blog-meta">
-                            <a href="blog.html">
+                            <a href="/chitietcamnang/{{item.slug}}">
                                 <i class="far fa-calendar-days"></i>
                                 {{item.creationTime | date:'dd MMM, yyyy'}}
                             </a>
-                            <a class="author" href="blog.html">
+                            <a class="author" href="/chitietcamnang/{{item.slug}}">
                                 <i class="far fa-user"></i>
                                 By AdminVietLifeStore
                             </a>
                         </div>
                         <h2 class="blog-title">
-                            <a
-                                href="/chitietcamnang/{{item.slug}}">{{item.ten}}</a>
+                            <a href="/chitietcamnang/{{item.slug}}">{{item.ten}}</a>
                         </h2>
-                        <p class="blog-text">{{item.mota}}</p>
-                        <a href="/chitietcamnang/{{item.slug}}"
-                            class="ot-btn">Xem thêm<i
-                                class="fas fa-arrow-right ms-2"></i></a>
+                        <div class="blog-text" [innerHTML]="item.mota + ' ...'"></div>
+                        <a href="/chitietcamnang/{{item.slug}}" class="ot-btn">Xem thêm<i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
                 <div class="ot-pagination text-center">

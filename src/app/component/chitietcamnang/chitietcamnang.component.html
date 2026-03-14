@@ -1,64 +1,218 @@
 <div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
-    <div class="container">
+  <div class="container">
     <div class="breadcumb-content">
-        <h1 class="breadcumb-title" >{{ article?.ten }}</h1>
-        <ul class="breadcumb-menu">
-            <li  data-delay="100"><a href="/">Trang chủ</a></li>
-            <li  data-delay="100">{{ article?.ten }}</li>
-        </ul>
+      <h1 class="breadcumb-title">{{ article?.ten }}</h1>
+      <ul class="breadcumb-menu">
+        <li data-delay="100"><a href="/">Trang chủ</a></li>
+        <li data-delay="100">{{ article?.ten }}</li>
+      </ul>
     </div>
-    </div>
+  </div>
 </div>
+
 <section class="ot-blog-wrapper blog-details space-top space-extra-bottom">
-    <div class="container">
+  <div class="container">
     <div class="row">
-        <div class="col-xxl-8 col-lg-7" *ngIf="article">
-            <div class="ot-blog blog-single">
-                <div class="blog-img"><img [src]="getImageUrl(article.anh)" [alt]="article.ten"> <a class="blog-cat">{{ article.tenDanhMuc }}</a></div>
-                <div class="blog-content">
-                <div class="blog-meta">
-                    <a href="blog.html">
-                        <i class="far fa-calendar-days"></i>
-                        {{ article.creationTime | date:'dd MMM, yyyy'}}
-                    </a>
-                    <a class="author" href="blog.html">
-                        <i class="far fa-user"></i>
-                        By AdminVietLifeStore
-                    </a>
-                </div>
-                <h2 class="blog-title">{{ article.ten }}</h2>
-                <div [innerHTML]="article.mota"></div>
-                </div>
+      <div class="col-xxl-8 col-lg-7" *ngIf="article">
+        <div class="ot-blog blog-single">
+          <div class="blog-img">
+            <img [src]="getImageUrl(article.anh)" [alt]="article.ten" />
+            <a class="blog-cat">{{ article.tenDanhMuc }}</a>
+          </div>
+          <div class="blog-content">
+            <div class="blog-meta">
+              <a>
+                <i class="far fa-calendar-days"></i>
+                {{ article.creationTime | date:'dd MMM, yyyy' }}
+              </a>
+              <a class="author">
+                <i class="far fa-user"></i>
+                By AdminVietLifeStore
+              </a>
             </div>
+            <h2 class="blog-title">{{ article.ten }}</h2>
+            <div [innerHTML]="article.mota"></div>
+          </div>
         </div>
-        <div class="col-xxl-4 col-lg-5 sidebar-wrap">
-            <aside class="sidebar-area">
-                <div class="widget widget_categories">
-                <h3 class="widget_title">Danh mục cẩm nang</h3>
-                <ul>
-                    <li *ngFor="let cat of categories"><a href="blog.html">{{ cat.ten }}</a> <span>{{ cat.soLuong }}</span></li>
-                </ul>
+      </div>
+
+      <div class="col-xxl-4 col-lg-5 sidebar-wrap">
+        <aside class="sidebar-area">
+          <div class="widget widget_categories">
+            <h3 class="widget_title">Danh mục cẩm nang</h3>
+            <ul>
+              <li *ngFor="let cat of categories">
+                <a href="/danhmuccamnang/{{cat.slug}}">{{ cat.ten }}</a>
+                <span>{{ cat.soLuong }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="widget">
+            <h3 class="widget_title">Cẩm nang gần đây</h3>
+            <div class="recent-post-wrap">
+              <div class="recent-post" *ngFor="let item of relatedArticles">
+                <div class="media-img">
+                  <a href="/chitietcamnang/{{item.slug}}">
+                    <img [src]="getImageUrl(item.anh)" [alt]="item.ten" />
+                  </a>
                 </div>
-                <div class="widget">
-                <h3 class="widget_title">Cẩm nang gần đây</h3>
-                <div class="recent-post-wrap">
-                    <div class="recent-post" *ngFor="let item of relatedArticles">
-                        <div class="media-img"><a href="blog-details.html"><img [src]="getImageUrl(item.anh)" [alt]="item.ten"></a></div>
-                        <div class="media-body">
-                            <h4 class="post-title"><a class="text-inherit" href="blog-details.html">{{ item.ten }}</a></h4>
-                            <div class="recent-post-meta">
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5.66797 3.79199C5.3263 3.79199 5.04297 3.50866 5.04297 3.16699V0.666992C5.04297 0.325326 5.3263 0.0419922 5.66797 0.0419922C6.00964 0.0419922 6.29297 0.325326 6.29297 0.666992V3.16699C6.29297 3.50866 6.00964 3.79199 5.66797 3.79199ZM12.3346 3.79199C11.993 3.79199 11.7096 3.50866 11.7096 3.16699V0.666992C11.7096 0.325326 11.993 0.0419922 12.3346 0.0419922C12.6763 0.0419922 12.9596 0.325326 12.9596 0.666992V3.16699C12.9596 3.50866 12.6763 3.79199 12.3346 3.79199ZM6.08464 11.0837C5.9763 11.0837 5.86797 11.0587 5.76797 11.017C5.65964 10.9753 5.5763 10.917 5.49297 10.842C5.34297 10.6837 5.2513 10.4753 5.2513 10.2503C5.2513 10.142 5.2763 10.0337 5.31797 9.93366C5.35964 9.83366 5.41797 9.74199 5.49297 9.65866C5.5763 9.58366 5.65964 9.52533 5.76797 9.48366C6.06797 9.35866 6.44297 9.42533 6.6763 9.65866C6.8263 9.81699 6.91797 10.0337 6.91797 10.2503C6.91797 10.3003 6.90964 10.3587 6.9013 10.417C6.89297 10.467 6.8763 10.517 6.8513 10.567C6.83464 10.617 6.80964 10.667 6.7763 10.717C6.7513 10.7587 6.70964 10.8003 6.6763 10.842C6.51797 10.992 6.3013 11.0837 6.08464 11.0837ZM9.0013 11.0837C8.89297 11.0837 8.78464 11.0587 8.68464 11.017C8.5763 10.9753 8.49297 10.917 8.40964 10.842C8.25964 10.6837 8.16797 10.4753 8.16797 10.2503C8.16797 10.142 8.19297 10.0337 8.23464 9.93366C8.2763 9.83366 8.33464 9.74199 8.40964 9.65866C8.49297 9.58366 8.5763 9.52533 8.68464 9.48366C8.98464 9.35033 9.35964 9.42533 9.59297 9.65866C9.74297 9.81699 9.83464 10.0337 9.83464 10.2503C9.83464 10.3003 9.8263 10.3587 9.81797 10.417C9.80964 10.467 9.79297 10.517 9.76797 10.567C9.7513 10.617 9.7263 10.667 9.69297 10.717C9.66797 10.7587 9.6263 10.8003 9.59297 10.842C9.43464 10.992 9.21797 11.0837 9.0013 11.0837ZM11.918 11.0837C11.8096 11.0837 11.7013 11.0587 11.6013 11.017C11.493 10.9753 11.4096 10.917 11.3263 10.842L11.2263 10.717C11.1947 10.6706 11.1695 10.6201 11.1513 10.567C11.1272 10.5198 11.1104 10.4692 11.1013 10.417C11.093 10.3587 11.0846 10.3003 11.0846 10.2503C11.0846 10.0337 11.1763 9.81699 11.3263 9.65866C11.4096 9.58366 11.493 9.52533 11.6013 9.48366C11.9096 9.35033 12.2763 9.42533 12.5096 9.65866C12.6596 9.81699 12.7513 10.0337 12.7513 10.2503C12.7513 10.3003 12.743 10.3587 12.7346 10.417C12.7263 10.467 12.7096 10.517 12.6846 10.567C12.668 10.617 12.643 10.667 12.6096 10.717C12.5846 10.7587 12.543 10.8003 12.5096 10.842C12.3513 10.992 12.1346 11.0837 11.918 11.0837ZM6.08464 14.0003C5.9763 14.0003 5.86797 13.9753 5.76797 13.9337C5.66797 13.892 5.5763 13.8337 5.49297 13.7587C5.34297 13.6003 5.2513 13.3837 5.2513 13.167C5.2513 13.0587 5.2763 12.9503 5.31797 12.8503C5.35964 12.742 5.41797 12.6503 5.49297 12.5753C5.8013 12.267 6.36797 12.267 6.6763 12.5753C6.8263 12.7337 6.91797 12.9503 6.91797 13.167C6.91797 13.3837 6.8263 13.6003 6.6763 13.7587C6.51797 13.9087 6.3013 14.0003 6.08464 14.0003ZM9.0013 14.0003C8.78464 14.0003 8.56797 13.9087 8.40964 13.7587C8.25964 13.6003 8.16797 13.3837 8.16797 13.167C8.16797 13.0587 8.19297 12.9503 8.23464 12.8503C8.2763 12.742 8.33464 12.6503 8.40964 12.5753C8.71797 12.267 9.28464 12.267 9.59297 12.5753C9.66797 12.6503 9.7263 12.742 9.76797 12.8503C9.80964 12.9503 9.83464 13.0587 9.83464 13.167C9.83464 13.3837 9.74297 13.6003 9.59297 13.7587C9.43464 13.9087 9.21797 14.0003 9.0013 14.0003ZM11.918 14.0003C11.7013 14.0003 11.4846 13.9087 11.3263 13.7587C11.2492 13.6804 11.1895 13.5867 11.1513 13.4837C11.1096 13.3837 11.0846 13.2753 11.0846 13.167C11.0846 13.0587 11.1096 12.9503 11.1513 12.8503C11.193 12.742 11.2513 12.6503 11.3263 12.5753C11.518 12.3837 11.8096 12.292 12.0763 12.3503C12.1346 12.3587 12.1846 12.3753 12.2346 12.4003C12.2846 12.417 12.3346 12.442 12.3846 12.4753C12.4263 12.5003 12.468 12.542 12.5096 12.5753C12.6596 12.7337 12.7513 12.9503 12.7513 13.167C12.7513 13.3837 12.6596 13.6003 12.5096 13.7587C12.3513 13.9087 12.1346 14.0003 11.918 14.0003ZM16.0846 7.20033H1.91797C1.5763 7.20033 1.29297 6.91699 1.29297 6.57533C1.29297 6.23366 1.5763 5.95033 1.91797 5.95033H16.0846C16.4263 5.95033 16.7096 6.23366 16.7096 6.57533C16.7096 6.91699 16.4263 7.20033 16.0846 7.20033Z" fill="var(--theme-color)"/>
-                                <path d="M12.3333 17.9587H5.66667C2.625 17.9587 0.875 16.2087 0.875 13.167V6.08366C0.875 3.04199 2.625 1.29199 5.66667 1.29199H12.3333C15.375 1.29199 17.125 3.04199 17.125 6.08366V13.167C17.125 16.2087 15.375 17.9587 12.3333 17.9587ZM5.66667 2.54199C3.28333 2.54199 2.125 3.70033 2.125 6.08366V13.167C2.125 15.5503 3.28333 16.7087 5.66667 16.7087H12.3333C14.7167 16.7087 15.875 15.5503 15.875 13.167V6.08366C15.875 3.70033 14.7167 2.54199 12.3333 2.54199H5.66667Z" fill="var(--theme-color)"/>
-                            </svg>
-                            <a>{{ item.creationTime | date:'dd MMM, yyyy'}}</a>
-                            </div>
-                        </div>
+                <div class="media-body">
+                  <h4 class="post-title">
+                    <a class="text-inherit" href="/chitietcamnang/{{item.slug}}">{{ item.ten }}</a>
+                  </h4>
+                  <div class="recent-post-meta">
+                    <i class="fa-solid fa-calendar-days" style="color: rgb(255, 75, 140);margin-right: 10px;"></i>
+                    <a>{{ item.creationTime | date:'dd MMM, yyyy' }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <div class="fb-comment-section">
+            <div class="fb-section-title">Bình luận ({{ getTotalComments() }})</div>
+
+            <div class="fb-comments" *ngIf="comments.length > 0; else noComment">
+                <ng-container *ngFor="let comment of comments; let last = last">
+                <ng-container *ngTemplateOutlet="commentTpl; context: {
+                    $implicit: comment,
+                    depth: 0,
+                    parentId: null,
+                    isLast: last
+                }"></ng-container>
+                </ng-container>
+            </div>
+
+            <ng-template #noComment>
+                <div class="fb-empty">Chưa có bình luận nào. Hãy là người đầu tiên!</div>
+            </ng-template>
+
+            <!-- Main input -->
+            <div class="fb-input-row" style="margin-top: 14px;">
+                <div class="fb-avatar av-0">{{ getInitial(userName || 'B') }}</div>
+                <textarea
+                class="fb-textarea"
+                [(ngModel)]="mainCommentText"
+                name="mainComment"
+                placeholder="Viết bình luận..."
+                rows="1"
+                (keydown.enter)="$event.preventDefault(); submitMain()"
+                (input)="autoResize($event)">
+                </textarea>
+                <button class="fb-send-btn" [class.active]="mainCommentText.trim()" (click)="submitMain()">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="white"/></svg>
+                </button>
+            </div>
+            </div>
+
+            <ng-template #commentTpl
+            let-comment
+            let-depth="depth"
+            let-parentId="parentId"
+            let-isLast="isLast">
+
+            <div class="fb-comment-wrap"
+                [class.is-reply]="depth > 0"
+                [class.is-last]="isLast"
+                [attr.data-depth]="depth">
+
+                <!-- Đường kẻ dọc + ngang (chỉ hiện khi là reply) -->
+                <div class="fb-thread-line" *ngIf="depth > 0"></div>
+
+                <div class="fb-comment-row">
+                <!-- Avatar -->
+                <div class="fb-avatar-wrap">
+                    <div class="fb-avatar" [class.av-sm]="depth > 0" [ngClass]="getAvatarColor(comment.tenNguoiDung)">
+                    {{ getInitial(comment.tenNguoiDung) }}
+                    </div>
+                    <!-- Đường kẻ dọc từ avatar xuống (nếu có replies và đang mở) -->
+                    <div class="fb-avatar-line"
+                        *ngIf="comment.replies?.length && openReplies[comment.id]">
                     </div>
                 </div>
+
+                <div class="fb-comment-body">
+                    <!-- Bubble -->
+                    <div class="fb-bubble">
+                    <button class="fb-more-btn" (click)="toggleDropdown(comment.id, $event)">···</button>
+                    <div class="fb-name">{{ comment.tenNguoiDung }}</div>
+                    <div class="fb-text">{{ comment.noiDung }}</div>
+                    <div class="fb-date">{{ comment.creationTime | date:'dd MMM, yyyy' }}</div>
+
+                    <!-- Dropdown -->
+                    <div class="fb-dropdown" *ngIf="openDropdownId === comment.id" (click)="$event.stopPropagation()">
+                        <div class="fb-dropdown-item" (click)="copyComment(comment)">📋 Sao chép</div>
+                        <div class="fb-dropdown-item danger" (click)="deleteComment(comment.id, parentId)">🗑 Xóa</div>
+                    </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="fb-actions">
+                    <button class="fb-act" [class.liked]="comment.liked" (click)="toggleLike(comment)">
+                        {{ comment.liked ? 'Đã thích' : 'Thích' }}
+                    </button>
+                    <span class="fb-like-count" *ngIf="comment.likeCount > 0">👍 {{ comment.likeCount }}</span>
+                    <span class="fb-dot">·</span>
+                    <!--
+                        Mỗi node đều có thể reply.
+                        Lưu lại: replyTargetId (để hiện input), replyToName (placeholder),
+                                replyParentId (parentId gửi lên backend = id của comment hiện tại)
+                    -->
+                    <button class="fb-act" (click)="toggleReplyInput(comment.id, comment.tenNguoiDung, comment.id)">
+                        Phản hồi
+                    </button>
+                    </div>
+
+                    <!-- Toggle ẩn/hiện replies — hiện ở MỌI cấp có replies -->
+                    <button
+                    class="fb-reply-toggle"
+                    *ngIf="comment.replies?.length"
+                    (click)="toggleReplies(comment.id)">
+                    <span class="fb-chevron" [class.open]="openReplies[comment.id]">▾</span>
+                    {{ openReplies[comment.id] ? 'Ẩn' : 'Xem' }}
+                    {{ comment.replies.length }}
+                    {{ comment.replies.length === 1 ? 'phản hồi' : 'phản hồi' }}
+                    </button>
+
+                    <!-- Reply input ngay dưới comment này -->
+                    <div class="fb-input-row fb-reply-input"
+                        *ngIf="replyTargetId === comment.id"
+                        style="margin-top: 8px;">
+                    <div class="fb-avatar av-0 av-sm">B</div>
+                    <textarea
+                        class="fb-textarea"
+                        [(ngModel)]="replyText"
+                        [name]="'reply-' + comment.id"
+                        [placeholder]="'Phản hồi ' + replyToName + '...'"
+                        rows="1"
+                        (keydown.enter)="$event.preventDefault(); submitReply()"
+                        (input)="autoResize($event)"
+                        #replyInput>
+                    </textarea>
+                    <button class="fb-send-btn" [class.active]="replyText.trim()" (click)="submitReply()">
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="white"/></svg>
+                    </button>
+                    </div>
+
+                    <!-- Replies (đệ quy, mỗi cấp đều có toggle riêng) -->
+                    <div class="fb-replies-wrap" *ngIf="openReplies[comment.id] && comment.replies?.length">
+                    <ng-container *ngFor="let reply of comment.replies; let rLast = last">
+                        <ng-container *ngTemplateOutlet="commentTpl; context: {
+                        $implicit: reply,
+                        depth: depth + 1,
+                        parentId: comment.id,
+                        isLast: rLast
+                        }"></ng-container>
+                    </ng-container>
+                    </div>
+
                 </div>
-            </aside>
-        </div>
+                </div>
+            </div>
+            </ng-template>
+        </aside>
+      </div>
     </div>
-    </div>
+  </div>
 </section>

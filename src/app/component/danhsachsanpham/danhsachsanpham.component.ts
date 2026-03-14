@@ -14,7 +14,7 @@ export class DanhsachsanphamComponent implements OnInit {
   total = 0;
 
   page = 1;
-  pageSize = 15;
+  pageSize = 10;
   totalPages = 0;
 
   keyword = '';
@@ -84,7 +84,7 @@ export class DanhsachsanphamComponent implements OnInit {
   }
 
   get toItem(): number {
-    return Math.min(this.page * this.pageSize, this.total);
+    return Math.ceil(this.total / this.pageSize);
   }
 
   getTotalPagesArray(): number[] {

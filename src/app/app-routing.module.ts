@@ -15,6 +15,8 @@ import { DanhmucsanphamComponent } from './component/danhmucsanpham/danhmucsanph
 import { DanhmuccamnangComponent } from './component/danhmuccamnang/danhmuccamnang.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { ThongtincanhanComponent } from './component/thongtincanhan/thongtincanhan.component';
+import { PaymentComponent } from './component/payment/payment.component';
+import { DathangthanhcongComponent } from './component/dathangthanhcong/dathangthanhcong.component';
 
 const routes: Routes = [
   { path: '', component: TrangchuComponent },
@@ -32,6 +34,8 @@ const routes: Routes = [
   { path: 'danhmuccamnang/:slug', component: DanhmuccamnangComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'taikhoancuaban', component: ThongtincanhanComponent },
+  { path: 'payment', component: PaymentComponent },
+  { path: 'dathangthanhcong', component: DathangthanhcongComponent }
 ];
 
 @NgModule({

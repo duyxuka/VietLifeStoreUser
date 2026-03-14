@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     if (this.isBrowser) {
-      this.getCurrentUserFromToken();
+      this.loadCurrentUser();
       this.cartService.cart$.subscribe(items => {
         this.cartItems = items;
         this.totalQuantity = items.length;
@@ -76,18 +76,6 @@ export class AppComponent implements OnInit {
   }
   removeItem(id: string, bienTheId: string | null) {
     this.cartService.removeFromCart(id, bienTheId);
-  }
-  getCurrentUserFromToken() {
-    if (!this.isBrowser) return;
-
-    const token = localStorage.getItem('access_token');
-    if (!token) return;
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-
-    // ưu tiên given_name, nếu không có thì lấy username
-    this.currentUserName =
-      payload.given_name || payload.preferred_username || null;
   }
   logout() {
     this.authService.logout();
@@ -142,5 +130,16 @@ export class AppComponent implements OnInit {
     this.isMobileMenuOpen = false;
     this.isCartOpen = false;
     this.isInfoOpen = false;
+  }
+
+  loadCurrentUser() {
+    if (!this.isBrowser) return;
+
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    this.authService.getProfile().subscribe(res => {
+      this.currentUserName = res?.name || null;
+    });
   }
 }

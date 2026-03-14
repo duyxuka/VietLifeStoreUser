@@ -1,12 +1,12 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../cart.service';
-import { environment } from '../../enviroments/enviroment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../auth.service';
+import { environment } from '../../enviroments/enviroment';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-thanhtoan',
@@ -19,14 +19,37 @@ export class ThanhtoanComponent {
   cartItems: any[] = [];
   totalPrice = 0;
   discount = 0;
+  vouchers: any[] = [];
+  selectedVoucher: any = null;
   checkoutForm!: FormGroup;
-  paymentMethod = 'VNPAY';
+  user: any;
   mediaBaseUrl = environment.mediaUrl;
-  userId = this.aushService.getUserIdFromToken();
+
+  voucherOptions: OwlOptions = {
+    loop: true,
+    autoplay: false,
+    nav: true,
+    dots: false,
+    lazyLoad: true,
+    navText: ['<', '>'],
+    responsive: {
+      0: {
+        items: 1, nav: true
+      },
+      400: {
+        items: 1, nav: true
+      },
+      740: {
+        items: 2, nav: true
+      },
+      940: {
+        items: 2, nav: true
+      }
+    },
+  };
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cartService: CartService,
-    private http: HttpClient,
     private toastr: ToastrService,
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -42,7 +65,8 @@ export class ThanhtoanComponent {
       soDienThoai: ['', [Validators.required, Validators.pattern(/^[0-9]{9,11}$/)]],
       diaChi: ['', Validators.required],
       ghiChu: [''],
-      voucherCode: ['']
+      voucherCode: [''],
+      paymentMethod: ['VNPAY']
     });
 
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -51,44 +75,88 @@ export class ThanhtoanComponent {
       this.cartService.cart$.subscribe(items => {
         this.cartItems = items;
         this.totalPrice = this.cartService.getTotalPrice();
+        this.discount = 0;
+        this.selectedVoucher = null;
+        this.loadVouchers();
       });
     }
+    this.loadProfile();
   }
 
   get finalTotal() {
     return this.totalPrice - this.discount;
   }
+  loadVouchers() {
+    this.apiService.getVoucher(this.totalPrice).subscribe({
+      next: (vouchers: any) => {
+        this.vouchers = vouchers;
+      },
+      error: (err: any) => {
+        console.error("Lỗi tải vouchers:", err);
+      }
+    });
+  }
+  loadProfile() {
+    this.aushService.getProfile().subscribe(res => {
+      this.user = res;
+      console.log("User profile:", res);
 
-  applyVoucher() {
+      this.checkoutForm.patchValue({
+        ten: res.name,
+        email: res.email,
+        soDienThoai: res.phoneNumber
+      });
+    });
+  }
+  applyVoucher(voucher: any) {
 
+    if (this.totalPrice < voucher.donHangToiThieu) {
+      this.toastr.warning("Đơn chưa đủ điều kiện");
+      return;
+    }
+    let discount = 0;
+
+    if (voucher.laPhanTram) {
+      discount = this.totalPrice * voucher.giamGia / 100;
+    } else {
+      discount = voucher.giamGia;
+    }
+    if (discount > this.totalPrice) {
+      discount = this.totalPrice;
+    }
+    this.discount = discount;
+    this.selectedVoucher = voucher;
+    this.checkoutForm.patchValue({
+      voucherCode: voucher.maVoucher
+    });
+    this.toastr.success("Áp dụng voucher thành công");
+  }
+
+  applyVoucherByCode() {
     const code = this.checkoutForm.get('voucherCode')?.value;
 
     if (!code) {
-      this.toastr.warning("Vui lòng nhập mã voucher");
+      this.toastr.warning("Nhập mã voucher");
       return;
     }
 
-    this.http.get<any[]>('/api/app/vouchers/get-list-all')
-      .subscribe(res => {
-
-        const voucher = res.find(v => v.maVoucher === code);
-
-        if (!voucher) {
-          this.toastr.error("Voucher không tồn tại");
-          return;
+    this.apiService.validateVoucher(code, this.totalPrice)
+      .subscribe({
+        next: (voucher: any) => {
+          this.applyVoucher(voucher);
+        },
+        error: () => {
+          this.toastr.error("Voucher không hợp lệ");
         }
-
-        if (this.totalPrice < voucher.donHangToiThieu) {
-          this.toastr.error("Chưa đủ điều kiện áp dụng voucher");
-          return;
-        }
-
-        this.discount = voucher.laPhanTram
-          ? this.totalPrice * (voucher.giamGia / 100)
-          : voucher.giamGia;
-
-        this.toastr.success("Áp dụng voucher thành công");
       });
+  }
+
+  removeVoucher() {
+    this.selectedVoucher = null;
+    this.discount = 0;
+    this.checkoutForm.patchValue({
+      voucherCode: ''
+    });
   }
 
   placeOrder() {
@@ -107,33 +175,54 @@ export class ThanhtoanComponent {
     const formValue = this.checkoutForm.value;
 
     const order = {
-      taiKhoanKhachHangId: this.userId,
+      taiKhoanKhachHangId: this.user.id,
       ten: formValue.ten,
       email: formValue.email,
       soDienThoai: formValue.soDienThoai,
       diaChi: formValue.diaChi,
       ghiChu: formValue.ghiChu,
-      phuongThucThanhToan: this.paymentMethod,
+      phuongThucThanhToan: formValue.paymentMethod,
       trangThai: 0,
       tongTien: this.finalTotal,
+      giamGiaVoucher: this.discount,
+      voucherId: this.selectedVoucher?.id,
       chiTietDonHangs: this.cartItems.map(item => ({
         sanPhamId: item.id,
         sanPhamBienThe: JSON.stringify(item.thuocTinhDaChon) || '',
         quaTang: item.quaTangTen || '',
         soLuong: item.quantity,
         gia: item.giaKhuyenMai > 0 ? item.giaKhuyenMai : item.gia,
-        giamGiaVoucher: this.discount / this.cartItems.length,
         trangThai: true
       }))
     };
-
+    console.log("Order data:", order);
     this.apiService.createDonHang(order)
       .subscribe({
-        next: () => {
-          this.toastr.success("Đặt hàng thành công");
-          this.cartService.clearCart();
-          this.checkoutForm.reset();
-          this.discount = 0;
+        next: (res: any) => {
+          const orderId = res.id;
+
+          if (formValue.paymentMethod === 'VNPAY') {
+
+            this.apiService.createPayment(orderId)
+              .subscribe({
+                next: (paymentUrl: any) => {
+                  console.log("Payment URL:", paymentUrl);
+                  if (this.isBrowser) {
+                    window.location.href = paymentUrl;
+                  }
+                },
+                error: (err: any) => {
+                  console.error("Error creating payment:", err);
+                  this.toastr.error("Có lỗi xảy ra khi tạo đơn hàng");
+                }
+              });
+
+          } else {
+            if (this.isBrowser) {
+              window.location.href = "/dathangthanhcong?orderId=" + orderId;
+            }
+            this.cartService.clearCart();
+          }
         },
         error: () => {
           this.toastr.error("Có lỗi xảy ra");

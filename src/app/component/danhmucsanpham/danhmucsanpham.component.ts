@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../enviroments/enviroment';
 import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-danhmucsanpham',
@@ -32,6 +33,7 @@ export class DanhmucsanphamComponent implements OnInit {
     private apiService: ApiService,
     private route: ActivatedRoute,
     private router: Router,
+    private toastr: ToastrService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
@@ -138,7 +140,6 @@ export class DanhmucsanphamComponent implements OnInit {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
-
-    alert('Đã thêm vào giỏ hàng');
+    this.toastr.success('Đã thêm vào giỏ hàng', 'Thành công');
   }
 }

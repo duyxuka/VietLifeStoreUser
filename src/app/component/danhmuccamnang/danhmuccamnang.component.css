@@ -1,13 +1,15 @@
 .widget_categories ul li a.active {
-    background-color: #ff5584;
-    font-weight: 600;
-    color: #fff;
+  background-color: #ff5584;
+  font-weight: 600;
+  color: #fff;
 }
+
 .widget_categories ul li span.active {
-    background-color: #ff5584;
-    font-weight: 600;
-    color: #fff;
+  background-color: #ff5584;
+  font-weight: 600;
+  color: #fff;
 }
+
 .ot-pagination ul {
   display: inline-flex;
   gap: 10px;
@@ -28,7 +30,8 @@
   color: #333;
   text-decoration: none;
   font-weight: 600;
-  cursor: pointer;              /* 👈 BÀN TAY */
+  cursor: pointer;
+  /* 👈 BÀN TAY */
   transition: all 0.25s ease;
 }
 
@@ -50,4 +53,18 @@
   opacity: 0.4;
   pointer-events: none;
   cursor: not-allowed;
+}
+
+.blog-img {
+  width: 400px;
+  height: auto;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.blog-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }

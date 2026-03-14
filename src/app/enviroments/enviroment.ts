@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:44385/api/app/',
-  mediaUrl: 'https://localhost:44385/files/',
-  url: 'https://localhost:44385/'
+  apiUrl: 'http://42.96.61.186:8090/api/app/',
+  mediaUrl: 'http://42.96.61.186:8090/files/',
+  url: 'http://42.96.61.186:8090/'
 };

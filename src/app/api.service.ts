@@ -9,6 +9,7 @@ import { environment } from './enviroments/enviroment';
 export class ApiService {
 
   private baseUrl = environment.apiUrl;
+  private UrlAuth = environment.url;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -132,5 +133,41 @@ export class ApiService {
       `${this.baseUrl}don-hangs`,
       data
     );
+  }
+
+  createPayment(orderId: string): Observable<any> {
+    return this.httpClient.post(`${this.UrlAuth}api/payment/create-url?orderId=${orderId}`, {});
+  }
+
+  postPayment(data: any) {
+    return this.httpClient.post(`${this.baseUrl}payment-information-models`, data);
+  }
+
+  validateVoucher(code: string, orderTotal: number): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}vouchers/validate-voucher?code=${code}&orderTotal=${orderTotal}`, {});
+  }
+
+  getVoucher(orderTotal: number): Observable<any> {
+    return this.httpClient.get<any>(`${this.baseUrl}vouchers/available-vouchers?orderTotal=${orderTotal}`);
+  }
+
+  cancelOrder(id: string) {
+    return this.httpClient.post(`${this.baseUrl}don-hangs/${id}/cancel-order`, {});
+  }
+
+  getCommentsByCamNang(id: string) {
+    return this.httpClient.get(`${this.baseUrl}cam-nang-comment/by-cam-nang/${id}`);
+  }
+
+  createComment(data: any) {
+    return this.httpClient.post(`${this.baseUrl}cam-nang-comment`, data);
+  }
+
+  getReviewsByProduct(productId: string) {
+    return this.httpClient.get<any>(`${this.baseUrl}san-pham-reviews/by-san-pham/${productId}`);
+  }
+
+  createReview(data: any) {
+    return this.httpClient.post(`${this.baseUrl}san-pham-reviews`,data);
   }
 }

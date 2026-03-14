@@ -3,7 +3,7 @@
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Chi tiết sản phẩm</h1>
         <ul class="breadcumb-menu">
-            <li  data-delay="100"><a href="index.html">Trang chủ</a></li>
+            <li  data-delay="100"><a href="/">Trang chủ</a></li>
             <li  data-delay="100">Chi tiết sản phẩm</li>
         </ul>
     </div>
@@ -61,27 +61,7 @@
                 <div class="quantity" ><button class="quantity-minus qty-btn" (click)="decreaseQty()"><i class="far fa-minus"></i></button> <input type="number" class="qty-input" step="1" min="1" max="100" name="quantity" [(ngModel)]="quantity" title="Qty"> <button class="quantity-plus qty-btn" (click)="increaseQty()"><i class="far fa-plus"></i></button></div>
                 <button class="ot-btn" (click)="addToCart()"><i class="fa-light fa-basket-shopping me-1"></i>Thêm vào giỏ hàng</button> 
                 </div>
-                <div class="product_meta" ><span class="sku_wrapper">SKU: <span class="sku">FTC1020B65D</span></span> <span>Tags: <a href="shop.html">4-5 years</a><a href="shop.html">12+ years</a></span> <span class="posted_in">Category: <a href="shop.html">Kids Toys</a></span> <span>Tags: <a href="shop.html">Toys</a><a href="shop.html">Baby Shirt</a></span></div>
-                <div class="checklist-wrap" >
-                <div class="row gy-2">
-                    <div class="col-lg-5">
-                        <div class="check-list">
-                            <ul>
-                            <li><i class="fas fa-check"></i> Free shipping orders from $150</li>
-                            <li><i class="fas fa-check"></i> 30 days exchange & return</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="check-list">
-                            <ul>
-                            <li><i class="fas fa-check"></i> Babymart Flash Discount: Starting at 30% Off</li>
-                            <li><i class="fas fa-check"></i> Safe & Secure online shopping</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -100,6 +80,104 @@
         <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
             <div [innerHTML]="product?.thongSoKyThuat"></div>
         </div>
+    </div>
+    <div class="rv-wrap">
+
+    <!-- Header: đếm + nút ẩn/hiện -->
+    <div class="rv-header">
+        <p class="rv-title">{{ reviews.length }} đánh giá cho <strong>{{ product?.ten }}</strong></p>
+        <button class="rv-toggle-btn" (click)="toggleReviews()">
+        {{ showReviews ? 'Ẩn đánh giá' : 'Xem đánh giá' }}
+        </button>
+    </div>
+
+    <!-- Khối đánh giá (ẩn/hiện) -->
+    <div *ngIf="showReviews">
+
+        <!-- Tổng quan điểm -->
+        <div class="rv-summary" *ngIf="reviews.length > 0">
+        <div class="rv-score-block">
+            <div class="rv-big-score">{{ avgRating | number:'1.1-1' }}</div>
+            <div class="rv-stars-display">
+            <span *ngFor="let s of [1,2,3,4,5]"
+                    class="rv-star-icon"
+                    [class.lit]="s <= avgRating">★</span>
+            </div>
+            <div class="rv-big-label">trên 5 sao</div>
+        </div>
+        <div class="rv-bars">
+            <div *ngFor="let s of [5,4,3,2,1]" class="rv-bar-row">
+            <span class="rv-bar-label">{{ s }}★</span>
+            <div class="rv-bar-track">
+                <div class="rv-bar-fill"
+                    [style.width.%]="getStarPercent(s)"></div>
+            </div>
+            <span class="rv-bar-count">{{ getStarCount(s) }}</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Danh sách đánh giá (phân trang) -->
+        <div class="rv-list">
+        <div *ngFor="let item of pagedReviews" class="rv-item">
+            <div class="rv-avatar"
+                [ngStyle]="getAvatarStyle(item.tenNguoiDung)">
+            {{ getInitial(item.tenNguoiDung) }}
+            </div>
+            <div class="rv-body">
+            <div class="rv-meta">
+                <span class="rv-name">{{ item.tenNguoiDung }}</span>
+                <span class="rv-date">{{ item.creationTime | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="rv-stars-display">
+                <span *ngFor="let s of [1,2,3,4,5]"
+                    class="rv-star-icon"
+                    [class.lit]="s <= item.soSao">★</span>
+            </div>
+            <p class="rv-text">{{ item.noiDung }}</p>
+            </div>
+        </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="rv-pagination" *ngIf="totalPages > 1">
+        <button class="rv-page-btn"
+                [disabled]="currentPage === 1"
+                (click)="goPage(currentPage - 1)">‹</button>
+        <button *ngFor="let p of pageNumbers"
+                class="rv-page-btn"
+                [class.active]="p === currentPage"
+                (click)="goPage(p)">{{ p }}</button>
+        <button class="rv-page-btn"
+                [disabled]="currentPage === totalPages"
+                (click)="goPage(currentPage + 1)">›</button>
+        </div>
+
+    </div><!-- /ngIf showReviews -->
+
+    <hr class="rv-divider">
+
+    <!-- Form gửi đánh giá -->
+    <div class="rv-form-wrap">
+        <h5 class="rv-form-title">Viết đánh giá của bạn</h5>
+        <div class="rv-form-group">
+        <label>Chọn số sao</label>
+        <div class="rv-star-select">
+            <i *ngFor="let s of [1,2,3,4,5]"
+            class="fa fa-star rv-star-icon"
+            [class.lit]="s <= review.soSao"
+            (click)="setRating(s)"></i>
+        </div>
+        </div>
+        <div class="rv-form-group">
+        <label>Nội dung đánh giá</label>
+        <textarea [(ngModel)]="review.noiDung"
+                    class="rv-textarea"
+                    placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
+        </div>
+        <button class="ot-btn" (click)="submitReview()">Gửi đánh giá</button>
+    </div>
+
     </div>
     <div class="space-top mb-30">
         <div class="row justify-content-center align-items-center">
@@ -122,8 +200,13 @@
                         </div>
                         <div class="product-content">
                             <h3 class="box-title"><a href="chitietsanpham/{{ item.slug }}" [title]="item.ten">{{ item.ten }}</a></h3>
-                            <div class="woocommerce-product-rating" style="margin: 0;">
-                                <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5" style="margin: 0;"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                            <div class="row">
+                                <div class="woocommerce-product-rating col-6" style="margin: 0;">
+                                    <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5" style="margin: 0;"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                                </div>
+                                <div class="col-6" *ngIf="item.luotMua > 0">
+                                    <span>Đã bán: {{item.luotMua | numberShort}}</span>
+                                </div>
                             </div>
                             <span class="price" *ngIf="item.giaKhuyenMai == 0">{{ item.gia | number}}</span>
                             <span class="price" *ngIf="item.giaKhuyenMai > 0">{{ item.giaKhuyenMai | number}}<del>{{ item.gia | number }}</del></span>
@@ -141,8 +224,8 @@
                                 </ng-template>
                             </div>
                             <div [innerHTML]="item.moTaNgan"></div>
-                            <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100" href="javascript:void(0)" (click)="addToCartProduct(item)" style="font-size: 15px;"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
-                            <a *ngIf="item.hasVariants" class="ot-btn style7 w-100" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
+                            <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="javascript:void(0)" (click)="addToCartProduct(item)" style="font-size: 15px;"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
+                            <a *ngIf="item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
                         </div>
                     </div>
                 </div>

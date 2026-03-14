@@ -162,4 +162,11 @@ export class AuthService {
             }
         );
     }
+    getOrderbyUserId(skip: number, take: number, status?: number) {
+        let url = `${environment.apiUrl}don-hangs/my-orders-paged?skipCount=${skip}&maxResultCount=${take}`;
+        if (status !== null && status !== undefined) {
+            url += `&trangThai=${status}`;
+        }
+        return this.http.get<any>(url);
+    }
 }

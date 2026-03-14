@@ -9,36 +9,35 @@
         </div>
     </div>
 </div>
-
 <section class="account-section space-extra-bottom mt-50">
     <div class="container">
         <div class="row">
             <!-- MENU LEFT -->
             <div class="col-lg-3">
                 <div class="account-sidebar">
-
                     <div class="account-user text-center">
-                        <img src="assets/img/hero/anh-dai-dien-zalo-30.jpg" class="avatar">
+                        <img src="assets/img/hero/anh-dai-dien-zalo-30.jpg"
+                            class="avatar">
                         <h4>{{user?.name}}</h4>
                         <p>{{user?.email}}</p>
                     </div>
                     <ul class="account-menu">
                         <li (click)="tab='account'"
-                            [class.active]="tab=='account'">
-                            <i class="far fa-user"></i> Tài khoản
+                        [class.active]="tab=='account'">
+                        <i class="far fa-user"></i> Tài khoản
                         </li>
                         <li (click)="tab='profile'"
-                            [class.active]="tab=='profile'">
-                            <i class="fa-regular fa-address-card"></i> Thông tin tài khoản
+                        [class.active]="tab=='profile'">
+                        <i class="fa-regular fa-address-card"></i> Thông tin
+                        tài khoản
                         </li>
                         <li (click)="tab='orders'"
-                            [class.active]="tab=='orders'">
-                            <i class="far fa-box"></i> Đơn hàng của tôi
+                        [class.active]="tab=='orders'">
+                        <i class="far fa-box"></i> Đơn hàng của tôi
                         </li>
-                        
                         <li (click)="tab='password'"
-                            [class.active]="tab=='password'">
-                            <i class="far fa-lock"></i> Đổi mật khẩu
+                        [class.active]="tab=='password'">
+                        <i class="far fa-lock"></i> Đổi mật khẩu
                         </li>
                         <li (click)="logout()" class="logout">
                             <i class="far fa-sign-out"></i> Đăng xuất
@@ -46,119 +45,256 @@
                     </ul>
                 </div>
             </div>
-
             <!-- CONTENT RIGHT -->
             <div class="col-lg-9">
                 <!-- account -->
                 <div *ngIf="tab=='account'" class="account-box">
-
                     <h3>Tài khoản của bạn</h3>
-
                     <p>
-                        Xin chào, <strong>{{user.name}}</strong>
+                        Xin chào, <strong>{{user?.name}}</strong>
                     </p>
-
                     <p>
-                        Từ tài khoản của bạn, bạn có thể dễ dàng kiểm tra và xem các đơn đặt hàng gần đây
-                        của mình, cũng như chỉnh sửa thông tin cá nhân và thay đổi mật khẩu.
+                        Từ tài khoản của bạn, bạn có thể dễ dàng kiểm tra và xem
+                        các đơn đặt hàng gần đây
+                        của mình, cũng như chỉnh sửa thông tin cá nhân và thay
+                        đổi mật khẩu.
                     </p>
-
                     <h5 class="mt-3">
                         Tổng tiền tất cả đơn hàng đã giao thành công của bạn:
                         <b>{{totalSpent | number}} VND</b>
                     </h5>
-
                 </div>
                 <!-- PROFILE -->
                 <div *ngIf="tab=='profile'" class="account-box">
                     <h3>Thông tin tài khoản</h3>
-
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Họ tên</label>
-                            <input type="text" [(ngModel)]="user.name"
-                                class="form-control">
+                            <label>Họ tên <span class="text-danger">*</span></label>
+                            <input type="text" [(ngModel)]="user.name" class="form-control" #name="ngModel" required minlength="3">
+                            <small class="text-danger" *ngIf="name.invalid && name.touched">
+                            Họ tên phải từ 3 ký tự trở lên
+                            </small>
                         </div>
                         <div class="col-md-6">
-                            <label>Email</label>
+                            <label>Email <span class="text-danger">*</span></label>
                             <input type="text"
                                 [value]="user?.email"
                                 class="form-control"
                                 disabled>
                         </div>
                         <div class="col-md-12">
-                            <label>Số điện thoại</label>
-                            <input type="text" [(ngModel)]="user.phoneNumber"
-                                class="form-control">
+                            <label>Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" [(ngModel)]="user.phoneNumber" class="form-control" #phone="ngModel" required pattern="^[0-9]{9,11}$">
+                            <small class="text-danger" *ngIf="phone.invalid && phone.touched">
+                            Số điện thoại không hợp lệ
+                            </small>
                         </div>
                     </div>
-                    <button class="ot-btn mt-3" (click)="updateProfile()">Cập nhật</button>
+                    <button class="ot-btn mt-3" (click)="updateProfile()">Cập
+                    nhật</button>
                 </div>
                 <!-- ORDERS -->
-                <div *ngIf="tab=='orders'" class="account-box">
+                <div *ngIf="tab=='orders'" class="account-box table-responsive">
                     <h3>Đơn hàng của tôi</h3>
+                    
                     <table class="table order-table">
                         <thead>
                             <tr>
-                                <th>Mã đơn</th>
+                                <th>Đơn hàng</th>
                                 <th>Ngày</th>
+                                <th>Thanh toán</th>
+                                <th>Voucher</th>
                                 <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
-                                <th></th>
+                                <th>
+                                    <select class="form-select w-auto" style="padding-right: 21px; height: 36px;"
+                                        (change)="filterStatus($event)">
+                                        <option value="">Trạng thái</option>
+                                        <option value="0">Chờ xác nhận</option>
+                                        <option value="1">Đang xử lý</option>
+                                        <option value="2">Đang giao</option>
+                                        <option value="3">Hoàn thành</option>
+                                        <option value="4">Đã hủy</option>
+                                    </select>
+                                </th>
+                                <th>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let order of orders">
-                                <td>#{{order.id}}</td>
-                                <td>{{order.date}}</td>
-                                <td>{{order.total | number}} ₫</td>
-                                <td>
-                                    <span class="badge bg-success"
-                                        *ngIf="order.status=='done'">
-                                        Hoàn thành
-                                    </span>
-                                    <span class="badge bg-warning"
-                                        *ngIf="order.status=='pending'">
+                            <ng-container *ngFor="let order of orders">
+                                <tr>
+                                    <td>
+                                        <div>SĐT: {{order.soDienThoai}}</div>
+                                        <div>Địa chỉ: {{order.diaChi}}</div>
+                                    </td>
+                                    <td>{{order.ngayDat | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{order.phuongThucThanhToan}}</td>
+                                    <td>{{order.giamGiaVoucher > 0 ? order.giamGiaVoucher : 0 | number}} ₫</td>
+                                    <td>{{order.tongTien | number}} ₫</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-secondary" style="position: unset;"
+                                        *ngIf="order.trangThai==0">
+                                        Chờ xác nhận
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-warning" style="position: unset;"
+                                        *ngIf="order.trangThai==1">
                                         Đang xử lý
-                                    </span>
-                                </td>
-                                <td>
-                                    <button
-                                        class="btn btn-sm btn-outline-primary">
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-info" style="position: unset;"
+                                        *ngIf="order.trangThai==2">
+                                        Đang giao
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-success" style="position: unset;"
+                                        *ngIf="order.trangThai==3">
+                                        Hoàn thành
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-danger" style="position: unset;"
+                                        *ngIf="order.trangThai==4">
+                                        Đã hủy
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button
+                                        class="btn btn-sm btn-outline-primary" style="margin-right: 10px;"
+                                        [class.active]="selectedOrderId === order.id"
+                                        (click)="toggleOrder(order.id)">
                                         Xem
-                                    </button>
-                                </td>
-                            </tr>
+                                        </button>
+                                        <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        *ngIf="order.trangThai==0 || order.trangThai==1"
+                                        (click)="cancelOrder(order.id)">
+                                        Hủy đơn
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Chi tiết đơn hàng -->
+                                <tr *ngIf="selectedOrderId === order.id">
+                                    <td colspan="6">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sản phẩm</th>
+                                                    <th>Biến thể</th>
+                                                    <th>Quà tặng</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Giá</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of order.chiTietDonHangDtos">
+                                                    <td>{{item.tenSanPham}}</td>
+                                                    <td>{{item.sanPhamBienThe}}</td>
+                                                    <td>{{item.quaTang}}</td>
+                                                    <td>{{item.soLuong}}</td>
+                                                    <td>{{item.gia | number}} ₫</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </ng-container>
                         </tbody>
                     </table>
-                </div>
+                    <div class="pagination-wrapper mt-4 text-center">
+                        <button class="btn btn-outline-secondary me-2" (click)="changePage(currentPage-1)">
+                            <i class="fa-regular fa-angle-left"></i>
+                        </button>
 
+                        <button *ngFor="let p of pages" class="btn me-1" [class.btn-primary]="p === currentPage"
+                        [class.btn-outline-primary]="p !== currentPage"
+                        (click)="changePage(p)">
+                            {{p}}
+                        </button>
+
+                        <span *ngIf="(totalCount/pageSize) > pages[pages.length-1]">
+                        ...
+                        </span>
+                        <button class="btn btn-outline-secondary ms-2" (click)="changePage(currentPage+1)">
+                            <i class="fa-regular fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
                 <!-- CHANGE PASSWORD -->
                 <div *ngIf="tab=='password'" class="account-box">
                     <h3>Đổi mật khẩu</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Mật khẩu hiện tại</label>
-                            <input type="password"
-                                class="form-control"
-                                [(ngModel)]="password.oldPassword" placeholder="Nhập mật khẩu hiện tại">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <label>Mật khẩu mới</label>
-                                <input type="password"
+                    <form #passwordForm="ngForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                                <div class="password-input">
+                                    <input
+                                    [type]="showOldPassword ? 'text' : 'password'"
                                     class="form-control"
-                                    [(ngModel)]="password.newPassword" placeholder="Nhập mật khẩu mới">
+                                    [(ngModel)]="password.oldPassword"
+                                    name="oldPassword"
+                                    required
+                                    #oldPass="ngModel" placeholder="Nhập mật khẩu hiện tại">
+                                    <button
+                                        type="button"
+                                        class="eye-btn"
+                                        (click)="showOldPassword = !showOldPassword">
+                                    <i class="fa" [class.fa-eye]="!showOldPassword" [class.fa-eye-slash]="showOldPassword"></i>
+                                    </button>
+                                </div>
+                                <small class="text-danger" *ngIf="oldPass.invalid && oldPass.touched">
+                                Vui lòng nhập mật khẩu hiện tại
+                                </small>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label>Xác nhận mật khẩu mới</label>
-                            <input type="password"
-                                class="form-control"
-                                [(ngModel)]="password.confirmPassword" placeholder="Nhập lại mật khẩu mới">
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label>Mật khẩu mới <span class="text-danger">*</span></label>
+                                <div class="password-input">
+                                    <input
+                                    [type]="showNewPassword ? 'text' : 'password'"
+                                    class="form-control"
+                                    [(ngModel)]="password.newPassword"
+                                    name="newPassword"
+                                    required
+                                    minlength="6"
+                                    #newPass="ngModel" placeholder="Nhập mật khẩu mới">
+                                    <button
+                                        type="button"
+                                        class="eye-btn"
+                                        (click)="showNewPassword = !showNewPassword">
+                                    <i class="fa" [class.fa-eye]="!showNewPassword" [class.fa-eye-slash]="showNewPassword"></i>
+                                    </button>
+                                </div>
+                                <small class="text-danger" *ngIf="newPass.invalid && newPass.touched">
+                                Mật khẩu phải ít nhất 6 ký tự
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                                <div class="password-input">
+                                    <input
+                                    [type]="showConfirmPassword ? 'text' : 'password'"
+                                    class="form-control"
+                                    [(ngModel)]="password.confirmPassword"
+                                    name="confirmPassword"
+                                    required
+                                    #confirmPass="ngModel" placeholder="Nhập lại mật khẩu">
+                                    <button
+                                        type="button"
+                                        class="eye-btn"
+                                        (click)="showConfirmPassword = !showConfirmPassword">
+                                    <i class="fa" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <button class="ot-btn mt-3" (click)="changePassword()">Cập nhật mật khẩu</button>
+                        <button
+                        class="ot-btn mt-3"
+                        [disabled]="passwordForm.invalid"
+                        (click)="changePassword()">
+                        Cập nhật mật khẩu
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

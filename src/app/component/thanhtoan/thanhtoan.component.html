@@ -3,7 +3,7 @@
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Thanh toán</h1>
         <ul class="breadcumb-menu">
-            <li  data-delay="100"><a href="index.html">Trang chủ</a></li>
+            <li  data-delay="100"><a href="/">Trang chủ</a></li>
             <li  data-delay="100">Thanh toán</li>
         </ul>
     </div>
@@ -56,12 +56,12 @@
                     <tbody>
                         <tr class="cart_item" *ngFor="let item of cartItems">
                         <td data-title="Product">
-                            <a class="cart-productimage" href="shop-details.html">
+                            <a class="cart-productimage" href="chitietsanpham/{{ item.slug }}">
                                 <img width="91" height="91" [src]="getImageUrl(item.anh)" alt="Image">
                             </a>
                         </td>
                         <td data-title="Name">
-                            <a class="cart-productname" href="shop-details.html">{{ item.ten }}</a>
+                            <a class="cart-productname" href="chitietsanpham/{{ item.slug }}">{{ item.ten }}</a>
                             <div *ngIf="item.thuocTinhDaChon">
                                 <small *ngFor="let attr of item.thuocTinhDaChon | keyvalue">
                                     {{attr.key}}: {{attr.value}}
@@ -92,12 +92,84 @@
                 </table>
                 <div class="row">
                     <div class="col-12">
-                        <div class="woocommerce-form-coupon" style="padding: 20px;">
-                            <div class="form-group">
-                                <label>Voucher Code</label> 
-                                <input type="text" class="form-control" formControlName="voucherCode" placeholder="Nhập mã giảm giá">
+                        <div class="woocommerce-form-coupon" style="padding:20px">
+
+                            <h6>Áp dụng Voucher</h6>
+
+                            <!-- nhập mã voucher -->
+                            <div class="voucher-input">
+                                <input 
+                                type="text"
+                                class="form-control"
+                                formControlName="voucherCode"
+                                name="voucherCode"
+                                placeholder="Nhập mã voucher">
+
+                                <button 
+                                type="button"
+                                class="btn btn-voucher"
+                                (click)="applyVoucherByCode()">
+                                Áp dụng
+                                </button>
                             </div>
-                            <div class="form-group"><button type="submit" class="ot-btn" (click)="applyVoucher()">Áp dụng</button></div>
+
+                            <!-- voucher đã chọn -->
+                            <div *ngIf="selectedVoucher" class="selected-voucher mt-3">
+
+                                Voucher đang dùng:
+                                <strong>{{selectedVoucher.maVoucher}}</strong>
+
+                                <span class="text-success">
+                                -{{discount | number}}đ
+                                </span>
+
+                                <button 
+                                type="button"
+                                class="btn btn-sm ms-2"
+                                (click)="removeVoucher()">
+                                <i class="fa-solid fa-circle-xmark fa-lg" style="color: rgb(255, 52, 52);"></i>
+                                </button>
+
+                            </div>
+
+                            <!-- danh sách voucher -->
+                            <div class="voucher-list">
+                                <h6>Voucher của bạn</h6>
+                                <owl-carousel-o [options]="voucherOptions">
+                                    <ng-template carouselSlide *ngFor="let v of vouchers">
+                                        <div class="vouchergroup" style="width: fit-content;">
+                                            <div class="voucher-item">
+                                                <div class="about-grid" style="animation-name: slideInUp; animation-duration: 900ms; animation-timing-function: ease; animation-delay: 0ms; animation-direction: normal; animation-fill-mode: both;">
+                                                    <div class="box-icon" style="background: white;"><img src="assets/img/logo.svg" alt="img" style="display: initial;"></div>
+                                                    <div class="about-grid-details">
+                                                        <h3 class="box-title h6">Mã: {{v.maVoucher}}</h3>
+                                                        <div *ngIf="v.laPhanTram" class="box-text">
+                                                            Giảm: {{v.giamGia}}%
+                                                        </div>
+                                                        <div *ngIf="!v.laPhanTram" class="box-text">
+                                                            Giảm: {{v.giamGia | number}}đ
+                                                        </div>
+                                                        <small class="box-text">
+                                                            Đơn tối thiểu {{v.donHangToiThieu | number}}đ
+                                                        </small>
+                                                        
+                                                        <div class="voucher-action">
+                                                            <small class="box-text">
+                                                                Thời hạn: {{v.thoiHanBatDau | date:'dd'}} - {{v.thoiHanKetThuc | date:'dd/MM'}}
+                                                            </small> 
+                                                            <button type="button" class="btn btn-voucherapply" (click)="applyVoucher(v)"> Áp dụng </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </owl-carousel-o>
+                                <div *ngIf="!vouchers.length">
+                                    <p>Không có voucher nào khả dụng.</p>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,16 +177,16 @@
                     <div class="woocommerce-checkout-payment">
                         <ul class="wc_payment_methods payment_methods methods">
                             <li class="wc_payment_method payment_method_VNPAY">
-                            <input id="payment_method_VNPAY" type="radio" class="input-radio" name="payment_method" value="VNPAY" checked="checked"> 
+                            <input id="payment_method_VNPAY" type="radio" class="input-radio" name="paymentMethod" value="VNPAY" formControlName="paymentMethod"> 
                             <label for="payment_method_VNPAY">Thanh toán VNPAY-QR <span class="khuyendung">Khuyên dùng</span> </label>
-                            <div class="payment_box payment_method_VNPAY">
+                            <div class="payment_box payment_method_VNPAY" [style.display]="checkoutForm.get('paymentMethod')?.value === 'VNPAY' ? 'block' : 'none'">
                                 <p>Thanh toán qua Internet Banking, Visa, Master, JCB, VNPAY-QR</p>
                             </div>
                             </li>
                             <li class="wc_payment_method payment_method_COD">
-                            <input id="payment_method_COD" type="radio" class="input-radio" name="payment_method" value="COD"> 
+                            <input id="payment_method_COD" type="radio" class="input-radio" name="paymentMethod" value="COD" formControlName="paymentMethod"> 
                             <label for="payment_method_COD">Thanh toán khi nhận hàng (COD)</label>
-                            <div class="payment_box payment_method_COD">
+                            <div class="payment_box payment_method_COD" [style.display]="checkoutForm.get('paymentMethod')?.value === 'COD' ? 'block' : 'none'">
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng.</p>
                             </div>
                             </li>

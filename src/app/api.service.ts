@@ -147,8 +147,10 @@ export class ApiService {
     return this.httpClient.post<any>(`${this.baseUrl}vouchers/validate-voucher?code=${code}&orderTotal=${orderTotal}`, {});
   }
 
-  getVoucher(orderTotal: number): Observable<any> {
-    return this.httpClient.get<any>(`${this.baseUrl}vouchers/available-vouchers?orderTotal=${orderTotal}`);
+  getMyVouchersWithStatus(orderTotal: number): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}vouchers/my-vouchers-with-status?orderTotal=${orderTotal}`
+    );
   }
 
   cancelOrder(id: string) {
@@ -168,6 +170,38 @@ export class ApiService {
   }
 
   createReview(data: any) {
-    return this.httpClient.post(`${this.baseUrl}san-pham-reviews`,data);
+    return this.httpClient.post(`${this.baseUrl}san-pham-reviews`, data);
+  }
+
+  // Trang chủ — tất cả voucher toàn shop
+  getListAllVouchers(phamVi?: number): Observable<any[]> {
+    let url = `${this.baseUrl}vouchers/all`;
+    if (phamVi) url += `?phamVi=${phamVi}`;
+    return this.httpClient.get<any[]>(url);
+  }
+
+  // Trang danh mục — voucher toàn shop + voucher danh mục đó
+  getVouchersByDanhMuc(danhMucId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}vouchers/all?danhMucId=${danhMucId}`
+    );
+  }
+
+  // Trang chi tiết SP — voucher toàn shop + voucher sản phẩm đó
+  getVouchersBySanPham(sanPhamId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(
+      `${this.baseUrl}vouchers/all?sanPhamId=${sanPhamId}`
+    );
+  }
+
+  nhanVoucher(voucherId: string): Observable<void> {
+    return this.httpClient.post<void>(`${this.baseUrl}vouchers/nhan-voucher/${voucherId}`, {});
+  }
+  getMyVouchers(): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.baseUrl}vouchers/my-vouchers`);
+  }
+
+  tangLuotXem(productId: string) {
+    return this.httpClient.post(`${this.baseUrl}san-phams/tang-luot-xem/${productId}`, {});
   }
 }

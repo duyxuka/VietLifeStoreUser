@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Chi tiết sản phẩm</h1>
@@ -10,7 +12,7 @@
     </div>
 </div>
 <section class="product-details mt-50 space-extra-bottom">
-    <div class="container">
+    <div class="container" style="max-width: 1280px;">
     <div class="row gx-60 gy-50">
         <div class="col-lg-6">
             <div class="product-big-img" style="padding: 30px;">
@@ -23,62 +25,253 @@
         </div>
 
         <!-- Ảnh phụ -->
-        <div class="product-thumb-wrap">
-            <img *ngFor="let img of images"
-                 [src]="getImageUrl(img)"
-                 class="product-thumb"
-                 [class.active]="mainImage === img"
-                 (click)="changeImage(img)">
-        </div>
+        <owl-carousel-o *ngIf="images && images.length > 5" [options]="thumbOptions" class="product-thumb-wrap">
+            <ng-template carouselSlide *ngFor="let img of images">
+            <img
+                [src]="getImageUrl(img)"
+                class="product-thumb"
+                [class.active]="mainImage === img"
+                (click)="changeImage(img)"
+            />
+            </ng-template>
+        </owl-carousel-o>
 
+        <div class="product-thumb-wrap" *ngIf="images.length < 5"> 
+            <img *ngFor="let img of images" [src]="getImageUrl(img)" class="product-thumb" style="width: 70px;" [class.active]="mainImage === img" (click)="changeImage(img)"> 
+        </div>
     </div>
+            <!-- Thêm vào sau div product-option, trước div actions -->
+            <div class="product-voucher-wrap" *ngIf="vouchers.length > 0">
+                <div class="product-voucher-label">
+                <i class="fa-regular fa-ticket" style="color:#ee4d2d;"></i>
+                Mã giảm giá áp dụng
+                </div>
+            
+                <div class="product-voucher-list">
+                <div class="pv-card" *ngFor="let v of vouchers">
+            
+                    <div class="pv-left"
+                        [ngClass]="{
+                        'scope-shop':    v.phamVi === 1,
+                        'scope-product': v.phamVi === 2,
+                        'scope-cat':     v.phamVi === 3
+                        }">
+                    <div class="pv-notch-top"></div>
+                    <div class="pv-notch-bot"></div>
+            
+                    <div class="pv-icon">
+                        <ng-container [ngSwitch]="v.loaiVoucher">
+                        <i *ngSwitchCase="1" class="fa-regular fa-ticket-perforated"></i>
+                        <i *ngSwitchCase="2" class="fa-regular fa-truck"></i>
+                        <i *ngSwitchCase="3" class="fa-regular fa-rotate-left"></i>
+                        <i *ngSwitchDefault  class="fa-regular fa-ticket"></i>
+                        </ng-container>
+                    </div>
+            
+                    <span class="pv-scope-text">
+                        <ng-container [ngSwitch]="v.phamVi">
+                        <ng-container *ngSwitchCase="1">Toàn shop</ng-container>
+                        <ng-container *ngSwitchCase="2">Sản phẩm này</ng-container>
+                        <ng-container *ngSwitchCase="3">Danh mục này</ng-container>
+                        <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                        </ng-container>
+                    </span>
+            
+                    <span class="pv-badge-type">
+                        <ng-container [ngSwitch]="v.loaiVoucher">
+                        <ng-container *ngSwitchCase="1">Giảm đơn</ng-container>
+                        <ng-container *ngSwitchCase="2">Miễn ship</ng-container>
+                        <ng-container *ngSwitchCase="3">Hoàn tiền</ng-container>
+                        <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                        </ng-container>
+                    </span>
+                    </div>
+            
+                    <div class="pv-right">
+                    <div class="pv-top">
+                        <div class="pv-info">
+                        <span class="pv-title">
+                            <ng-container *ngIf="v.laPhanTram">Giảm {{ v.giamGia }}%</ng-container>
+                            <ng-container *ngIf="!v.laPhanTram">Giảm {{ v.giamGia | number }}đ</ng-container>
+                        </span>
+                        <span class="pv-sub">
+                            <ng-container *ngIf="v.laPhanTram && v.giamToiDa">
+                            Tối đa {{ v.giamToiDa | number }}đ ·
+                            </ng-container>
+                            Đơn từ {{ v.donHangToiThieu | number }}đ
+                        </span>
+                        </div>
+                        <button
+                            class="pv-save-btn"
+                            [class.saved]="isSaved(v.id)"
+                            [disabled]="isSaved(v.id)"
+                            (click)="saveVoucher(v.id)"
+                            [title]="(isSaved(v.id) ? 'Đã lưu trong ví' : 'Lưu vào ví')">
+                            <ng-container *ngIf="isSaved(v.id)">
+                                <i class="fa-solid fa-bookmark me-1"></i>Đã lưu
+                            </ng-container>
+                            <ng-container *ngIf="!isSaved(v.id)">
+                                <i class="fa-regular fa-bookmark me-1"></i>Lưu
+                            </ng-container>
+                        </button>
+                    </div>
+            
+                    <div class="pv-bottom">
+                        <div class="pv-bar-bg">
+                        <div class="pv-bar-fill"
+                            [style.width.%]="v.phanTramDaDung ?? 0"></div>
+                        </div>
+                        <div class="pv-meta">
+                        <span>Đã dùng {{ v.phanTramDaDung }}%</span>
+                        <span>
+                            <ng-container *ngIf="v.thoiHanKetThuc">
+                            Thời hạn: {{ v.thoiHanKetThuc | date:'dd/MM/yyyy' }}
+                            </ng-container>
+                            <ng-container *ngIf="!v.thoiHanKetThuc">Không giới hạn</ng-container>
+                        </span>
+                        </div>
+                    </div>
+                    </div>
+            
+                </div>
+                </div>
+            </div>
         </div>
         <div class="col-xxl-6 align-self-center">
             <div class="product-about">
                 <h2 class="product-title" >{{product?.ten}}</h2>
-                <div class="product-rating" >
-                <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span style="width:100%">Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
-                </div>
-                <div class="text" [innerHTML]="product?.moTaNgan"></div>
-                <p class="price" >{{displayPrice | number}} ₫<del *ngIf="originalPrice">{{originalPrice | number}} ₫</del> 
-                    <span class="stock-availability" *ngIf="product?.trangThai == true">Còn hàng</span>
-                    <span class="stock-availability" style="color: red;" *ngIf="product?.trangThai == false">Hết hàng</span>
+                <p class="price" style="margin: 0;">
+                    <!-- Có biến thể, chưa chọn đủ → hiển thị khoảng giá -->
+                    <ng-container *ngIf="product?.bienThes?.length && !selectedVariant">
+
+                        <!-- Có khuyến mãi biến thể -->
+                        <ng-container *ngIf="(product?.giaKhuyenMaiBienTheMin ?? 0) > 0">
+                            <span>
+                                <!-- KM giống nhau -->
+                                <ng-container *ngIf="product?.giaKhuyenMaiBienTheMin === product?.giaKhuyenMaiBienTheMax">
+                                    {{ product?.giaKhuyenMaiBienTheMin | number }}₫
+                                </ng-container>
+                                <!-- KM khác nhau -->
+                                <ng-container *ngIf="product?.giaKhuyenMaiBienTheMin !== product?.giaKhuyenMaiBienTheMax">
+                                    {{ product?.giaKhuyenMaiBienTheMin | number }}₫
+                                    &ndash;
+                                    {{ product?.giaKhuyenMaiBienTheMax | number }}₫
+                                </ng-container>
+                            </span>
+                            <del>
+                                <!-- Giá gốc giống nhau -->
+                                <ng-container *ngIf="product?.giaBienTheMin === product?.giaBienTheMax">
+                                    {{ product?.giaBienTheMin | number }}₫
+                                </ng-container>
+                                <!-- Giá gốc khác nhau -->
+                                <ng-container *ngIf="product?.giaBienTheMin !== product?.giaBienTheMax">
+                                    {{ product?.giaBienTheMin | number }}₫
+                                    &ndash;
+                                    {{ product?.giaBienTheMax | number }}₫
+                                </ng-container>
+                            </del>
+                        </ng-container>
+
+                        <!-- Không có khuyến mãi biến thể -->
+                        <ng-container *ngIf="!product?.giaKhuyenMaiBienTheMin">
+                            {{ product?.giaBienTheMin | number }}₫
+                            <ng-container *ngIf="product?.giaBienTheMin !== product?.giaBienTheMax">
+                                &ndash; {{ product?.giaBienTheMax | number }}₫
+                            </ng-container>
+                        </ng-container>
+
+                    </ng-container>
+
+                    <!-- Không có biến thể, hoặc đã chọn đủ biến thể → giá cụ thể -->
+                    <ng-container *ngIf="!product?.bienThes?.length || selectedVariant">
+                        {{ displayPrice | number }}₫
+                        <del *ngIf="originalPrice">{{ originalPrice | number }}₫</del>
+                    </ng-container>
                 </p>
+                
+                <div class="product-rating" style="margin: 0;">
+                    <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span style="width:100%">Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
+                </div>
+                <div class="highlight-box" *ngIf="product?.moTaNgan">
+                    <div class="highlight-box__header">
+                        <i class="fa-solid fa-fire highlight-box__icon"></i>
+                        <span class="highlight-box__title">Ưu điểm nổi bật</span>
+                    </div>
+                    <div class="highlight-box__content" [innerHTML]="product?.moTaNgan | safeHtml"></div>
+                </div>
+                <!-- ===== ƯU ĐÃI KHI MUA HÀNG ===== -->
+                <div class="uu-dai-box">
+                    <p class="uu-dai-box__title">Ưu đãi khi mua hàng</p>
+                    <ul class="uu-dai-box__list">
+                        <li>Giá bán niêm yết nhiều ưu đãi hấp dẫn</li>
+                        <li>Bảo hành chính hãng <a href="/chinhsach">Xem chi tiết</a></li>
+                        <li>Sản phẩm có đầy đủ chứng nhận về nguồn gốc &amp; chất lượng</li>
+                        <li>Đổi trả trong 7 ngày nếu có lỗi từ nhà sản xuất</li>
+                    </ul>
+                </div>
+                
                 <div class="product-option">
                     <div *ngFor="let tt of product?.thuocTinhs" class="mb-3">
-                    <div class="product-option-title">{{ tt.ten }}:</div>
-                    <div class="d-flex flex-wrap gap-2">
+                        <div class="product-option-title">
+                        {{ tt.ten }}:
+                        <span *ngIf="!selectedOptions[tt.ten]" style="color: red; font-size: 12px; font-weight: normal;">
+                            (Chưa chọn)
+                        </span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
                         <button *ngFor="let val of tt.giaTris"
                                 class="btn btn-outline-secondary btn-sm"
                                 [class.btn-active]="isSelected(tt.ten, val)"
                                 (click)="selectOption(tt.ten, val)">
-                        {{ val }}
+                            {{ val }}
                         </button>
-                    </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="actions">
-                <div class="quantity" ><button class="quantity-minus qty-btn" (click)="decreaseQty()"><i class="far fa-minus"></i></button> <input type="number" class="qty-input" step="1" min="1" max="100" name="quantity" [(ngModel)]="quantity" title="Qty"> <button class="quantity-plus qty-btn" (click)="increaseQty()"><i class="far fa-plus"></i></button></div>
-                <button class="ot-btn" (click)="addToCart()"><i class="fa-light fa-basket-shopping me-1"></i>Thêm vào giỏ hàng</button> 
+                    <div class="quantity" ><button class="quantity-minus qty-btn" (click)="decreaseQty()"><i class="far fa-minus"></i></button> <input type="number" class="qty-input" step="1" min="1" max="100" name="quantity" [(ngModel)]="quantity" title="Qty"> <button class="quantity-plus qty-btn" (click)="increaseQty()"><i class="far fa-plus"></i></button></div>
+                    <button class="ot-btn" (click)="addToCart()"><i class="fa-light fa-basket-shopping me-1"></i>Thêm vào giỏ hàng</button> 
+                    <p class="shout">
+                        <span class="stock-availability" *ngIf="product?.trangThai == true">Còn hàng</span>
+                        <span class="stock-availability" *ngIf="product?.trangThai == false">Hết hàng</span>
+                    </p>
+                </div>
+                <div class="product-hotline">
+                    <i class="fa-solid fa-phone-volume product-hotline__icon"></i>
+                    <span class="product-hotline__text">
+                        Nếu quý khách ngại đặt hàng, hãy gọi
+                        <a href="tel:0941415588" class="product-hotline__number">0941.415.588</a>
+                        để mua hàng nhanh nhất
+                    </span>
                 </div>
 
             </div>
         </div>
     </div>
-    <ul class="nav product-tab-style1" id="productTab" role="tablist">
-        <li class="nav-item" role="presentation" ><a class="nav-link active" id="description-tab" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="false">Mô tả</a></li>
-        <li class="nav-item" role="presentation" ><a class="nav-link" id="information-tab" data-bs-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="false">Hướng dẫn sử dụng</a></li>
-        <li class="nav-item" role="presentation" ><a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="true">Thông số kỹ thuật</a></li>
-    </ul>
-    <div class="tab-content" id="productTabContent">
-        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-            <div [innerHTML]="product?.moTa"></div>
-        </div>
-        <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
-            <div [innerHTML]="product?.huongDanSuDung"></div>
-        </div>
-        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-            <div [innerHTML]="product?.thongSoKyThuat"></div>
+    <div class="product-tabs-section">
+        <ul class="nav product-tab-style1 sticky-tab" id="productTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="description-tab" data-bs-toggle="tab" href="#description">Mô tả</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="information-tab" data-bs-toggle="tab" href="#information">Hướng dẫn sử dụng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews">Thông số kỹ thuật</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabContent">
+            <div class="tab-pane fade show active" id="description">
+                <div [innerHTML]="product?.moTa | safeHtml"></div>
+            </div>
+            <div class="tab-pane fade" id="information">
+                <div [innerHTML]="product?.huongDanSuDung | safeHtml"></div>
+            </div>
+            <div class="tab-pane fade" id="reviews">
+                <div [innerHTML]="product?.thongSoKyThuat | safeHtml"></div>
+            </div>
         </div>
     </div>
     <div class="rv-wrap">
@@ -183,54 +376,134 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-xl-4">
                 <div class="title-area text-center">
-                <h2 class="sec-title">Sản phẩm liên quan</h2>
+                <h2 class="sec-title" style="font-size: 38px;">Sản phẩm liên quan</h2>
                 </div>
             </div>
         </div>
-        <div class="swiper ot-slider has-shadow" id="productSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"3"},"1400":{"slidesPerView":"5"}}}'>
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" *ngFor="let item of relatedProducts">
-                    <div class="ot-product product-grid bg-white d-flex flex-column h-100" >
-                        <div class="product-img">
-                            <img [src]="getImageUrl(item.anh)" alt="Product Image"> 
-                            <span class="product-tag" *ngIf="item.phanTramGiamGia">-{{item.phanTramGiamGia}}%</span>
-                            <div class="actions">
-                                <a href="chitietsanpham/{{ item.slug }}" class="icon-btn popup-content"><i class="far fa-eye"></i></a>
-                            </div>
-                        </div>
-                        <div class="product-content">
-                            <h3 class="box-title"><a href="chitietsanpham/{{ item.slug }}" [title]="item.ten">{{ item.ten }}</a></h3>
-                            <div class="row">
-                                <div class="woocommerce-product-rating col-6" style="margin: 0;">
-                                    <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5" style="margin: 0;"><span>Rated <strong class="rating">5.00</strong> out of 5 based on <span class="rating">1</span> customer rating</span></div>
-                                </div>
-                                <div class="col-6" *ngIf="item.luotMua > 0">
-                                    <span>Đã bán: {{item.luotMua | numberShort}}</span>
-                                </div>
-                            </div>
-                            <span class="price" *ngIf="item.giaKhuyenMai == 0">{{ item.gia | number}}</span>
-                            <span class="price" *ngIf="item.giaKhuyenMai > 0">{{ item.giaKhuyenMai | number}}<del>{{ item.gia | number }}</del></span>
-                            <div class="gift-wrapper mt-2">
-                                <div *ngIf="item.quaTangGia > 0; else emptyGift">
-                                    <i class="fa-duotone fa-solid fa-gifts fa-bounce fa-xl" style="--fa-primary-color: rgb(234, 68, 142); --fa-secondary-color: rgb(234, 68, 142);"></i>
-                                    <span class="gift-product">Tặng: {{ item.quaTangTen }}</span>
-                                </div>
+        <owl-carousel-o *ngIf="relatedProducts && relatedProducts.length > 0"
+                        [options]="relatedOptions"
+                        class="related-product-carousel">
+            <ng-template carouselSlide *ngFor="let item of relatedProducts">
+            <div class="ot-product product-grid bg-white d-flex flex-column h-100">
+                <div class="product-img">
+                <img [src]="getImageUrl(item.anh)" alt="Product Image">
+                <span class="product-tag"
+                    *ngIf="!item.hasVariants && item.phanTramGiamGia">
+                    -{{ item.phanTramGiamGia }}%
+                </span>
 
-                                <ng-template #emptyGift>
-                                    <div class="gift-alt">
-                                        <i class="fa-regular fa-truck-bolt" style="margin-right: 7px;"></i>
-                                        <span>Miễn phí vận chuyển</span>
-                                    </div>
-                                </ng-template>
-                            </div>
-                            <div [innerHTML]="item.moTaNgan"></div>
-                            <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="javascript:void(0)" (click)="addToCartProduct(item)" style="font-size: 15px;"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
-                            <a *ngIf="item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
-                        </div>
+                <span class="product-tag"
+                    *ngIf="item.hasVariants && item.phanTramGiamGiaBienThe">
+                    -{{ item.phanTramGiamGiaBienThe }}%
+                </span>
+                <div class="actions">
+                    <a href="chitietsanpham/{{ item.slug }}" class="icon-btn popup-content">
+                    <i class="far fa-eye"></i>
+                    </a>
+                </div>
+                </div>
+                <div class="product-content">
+                <h3 class="box-title">
+                    <a href="chitietsanpham/{{ item.slug }}" [title]="item.ten">
+                    {{ item.ten }}
+                    </a>
+                </h3>
+                <div class="row">
+                    <div class="woocommerce-product-rating col-6" style="margin: 0;">
+                    <div class="star-rating" role="img" style="margin: 0;">
+                        <span>Rated <strong class="rating">5.00</strong> out of 5</span>
+                    </div>
+                    </div>
+                    <div class="col-6" *ngIf="item.luotMua > 0">
+                    <span>Đã bán: {{ item.luotMua | numberShort }}</span>
                     </div>
                 </div>
+
+                <div *ngIf="!item.hasVariants">
+                    <span class="price" *ngIf="item.giaKhuyenMai == 0">
+                        {{ item.gia | number }} đ
+                    </span>
+                    <span class="price" *ngIf="item.giaKhuyenMai > 0">
+                        {{ item.giaKhuyenMai | number }} đ
+                        <del>{{ item.gia | number }} đ</del>
+                    </span>
+                </div>
+                
+                <div *ngIf="item.hasVariants">
+                    <!-- Không có khuyến mãi -->
+                    <span class="price" *ngIf="!item.giaKhuyenMaiBienTheMin || item.giaKhuyenMaiBienTheMin == 0">
+                        <ng-container *ngIf="item.giaBienTheMin == item.giaBienTheMax">
+                            {{ item.giaBienTheMin | number }} đ
+                        </ng-container>
+                        <ng-container *ngIf="item.giaBienTheMin != item.giaBienTheMax">
+                            {{ item.giaBienTheMin | number }} đ
+                            -
+                            {{ item.giaBienTheMax | number }} đ
+                        </ng-container>
+                    </span>
+
+                    <!-- Có khuyến mãi -->
+                    <span class="price" *ngIf="item.giaKhuyenMaiBienTheMin">
+                        <!-- Giá KM giống nhau -->
+                        <ng-container *ngIf="item.giaKhuyenMaiBienTheMin == item.giaKhuyenMaiBienTheMax">
+                            {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                        </ng-container>
+                        <!-- Giá KM khác nhau -->
+                        <ng-container *ngIf="item.giaKhuyenMaiBienTheMin != item.giaKhuyenMaiBienTheMax">
+                            {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                            -
+                            {{ item.giaKhuyenMaiBienTheMax | number }} đ
+                        </ng-container>
+                        <!-- Giá gốc -->
+                        <del>
+                            <!-- Giá gốc giống nhau -->
+                            <ng-container *ngIf="item.giaBienTheMin == item.giaBienTheMax">
+                                {{ item.giaBienTheMin | number }} đ
+                            </ng-container>
+
+                            <!-- Giá gốc khác nhau -->
+                            <ng-container *ngIf="item.giaBienTheMin != item.giaBienTheMax">
+                                {{ item.giaBienTheMin | number }} đ
+                                -
+                                {{ item.giaBienTheMax | number }} đ
+                            </ng-container>
+                        </del>
+                    </span>
+                </div>
+
+                <div class="gift-wrapper mt-2">
+                    <div *ngIf="item.quaTangGia > 0; else emptyGift">
+                    <i class="fa-duotone fa-solid fa-gifts fa-bounce fa-xl"
+                        style="--fa-primary-color: rgb(234,68,142); --fa-secondary-color: rgb(234,68,142);">
+                    </i>
+                    <span class="gift-product">Tặng: {{ item.quaTangTen }}</span>
+                    </div>
+                    <ng-template #emptyGift>
+                    <div class="gift-alt">
+                        <i class="fa-regular fa-truck-bolt" style="margin-right: 7px;"></i>
+                        <span>Miễn phí vận chuyển</span>
+                    </div>
+                    </ng-template>
+                </div>
+
+                <div [innerHTML]="item.moTaNgan | safeHtml"></div>
+
+                <a *ngIf="!item.hasVariants"
+                    class="ot-btn style7 w-100 mt-auto"
+                    href="javascript:void(0)"
+                    (click)="addToCartProduct(item)"
+                    style="font-size: 15px;">
+                    <i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng
+                </a>
+                <a *ngIf="item.hasVariants"
+                    class="ot-btn style7 w-100 mt-auto"
+                    href="chitietsanpham/{{ item.slug }}">
+                    <i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết
+                </a>
+                </div>
             </div>
-        </div>
+            </ng-template>
+        </owl-carousel-o>
     </div>
     </div>
 </section>

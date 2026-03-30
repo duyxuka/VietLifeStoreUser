@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Danh sách sản phẩm</h1>
@@ -9,6 +11,105 @@
     </div>
     </div>
 </div>
+<section class="mt-30 mb-30" *ngIf="vouchers.length > 0" style="padding: 13px;">
+  <div class="container" style="padding: 25px; border-radius: 20px; box-shadow: rgba(0,0,0,0.24) 0px 3px 8px;">
+    <div class="product-voucher-wrap" *ngIf="vouchers.length > 0">
+        <div class="product-voucher-label">
+        <i class="fa-regular fa-ticket" style="color:#ee4d2d;"></i>
+        Mã giảm giá áp dụng
+        </div>
+    
+        <div class="product-voucher-list">
+        <div class="pv-card" *ngFor="let v of vouchers">
+    
+            <div class="pv-left"
+                [ngClass]="{
+                'scope-shop':    v.phamVi === 1,
+                'scope-product': v.phamVi === 2,
+                'scope-cat':     v.phamVi === 3
+                }">
+            <div class="pv-notch-top"></div>
+            <div class="pv-notch-bot"></div>
+    
+            <div class="pv-icon">
+                <ng-container [ngSwitch]="v.loaiVoucher">
+                <i *ngSwitchCase="1" class="fa-regular fa-ticket-perforated"></i>
+                <i *ngSwitchCase="2" class="fa-regular fa-truck"></i>
+                <i *ngSwitchCase="3" class="fa-regular fa-rotate-left"></i>
+                <i *ngSwitchDefault  class="fa-regular fa-ticket"></i>
+                </ng-container>
+            </div>
+    
+            <span class="pv-scope-text">
+                <ng-container [ngSwitch]="v.phamVi">
+                <ng-container *ngSwitchCase="1">Toàn shop</ng-container>
+                <ng-container *ngSwitchCase="2">Sản phẩm này</ng-container>
+                <ng-container *ngSwitchCase="3">Danh mục này</ng-container>
+                <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                </ng-container>
+            </span>
+    
+            <span class="pv-badge-type">
+                <ng-container [ngSwitch]="v.loaiVoucher">
+                <ng-container *ngSwitchCase="1">Giảm đơn</ng-container>
+                <ng-container *ngSwitchCase="2">Miễn ship</ng-container>
+                <ng-container *ngSwitchCase="3">Hoàn tiền</ng-container>
+                <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                </ng-container>
+            </span>
+            </div>
+    
+            <div class="pv-right">
+            <div class="pv-top">
+                <div class="pv-info">
+                <span class="pv-title">
+                    <ng-container *ngIf="v.laPhanTram">Giảm {{ v.giamGia }}%</ng-container>
+                    <ng-container *ngIf="!v.laPhanTram">Giảm {{ v.giamGia | number }}đ</ng-container>
+                </span>
+                <span class="pv-sub">
+                    <ng-container *ngIf="v.laPhanTram && v.giamToiDa">
+                    Tối đa {{ v.giamToiDa | number }}đ ·
+                    </ng-container>
+                    Đơn từ {{ v.donHangToiThieu | number }}đ
+                </span>
+                </div>
+                <button
+                    class="pv-save-btn"
+                    [class.saved]="isSaved(v.id)"
+                    [disabled]="isSaved(v.id)"
+                    (click)="saveVoucher(v.id)"
+                    [title]="(isSaved(v.id) ? 'Đã lưu trong ví' : 'Lưu vào ví')">
+                    <ng-container *ngIf="isSaved(v.id)">
+                        <i class="fa-solid fa-bookmark me-1"></i>Đã lưu
+                    </ng-container>
+                    <ng-container *ngIf="!isSaved(v.id)">
+                        <i class="fa-regular fa-bookmark me-1"></i>Lưu
+                    </ng-container>
+                </button>
+            </div>
+    
+            <div class="pv-bottom">
+                <div class="pv-bar-bg">
+                <div class="pv-bar-fill"
+                    [style.width.%]="v.phanTramDaDung ?? 0"></div>
+                </div>
+                <div class="pv-meta">
+                <span>Đã dùng {{ v.phanTramDaDung }}%</span>
+                <span>
+                    <ng-container *ngIf="v.thoiHanKetThuc">
+                    Thời hạn: {{ v.thoiHanKetThuc | date:'dd/MM/yyyy' }}
+                    </ng-container>
+                    <ng-container *ngIf="!v.thoiHanKetThuc">Không giới hạn</ng-container>
+                </span>
+                </div>
+            </div>
+            </div>
+    
+        </div>
+        </div>
+    </div>
+  </div>
+</section>
 <section class="mt-50 space-extra-bottom" id="blog-sec">
     <div class="container">
     <div class="row justify-content-center flex-row-reverse">
@@ -44,7 +145,15 @@
                         <div class="ot-product product-grid bg-white d-flex flex-column h-100" >
                             <div class="product-img">
                                 <img [src]="getImageUrl(item.anh)" alt="Product Image"> 
-                                <span class="product-tag" *ngIf="item.phanTramGiamGia">-{{item.phanTramGiamGia}}%</span>
+                                <span class="product-tag"
+                                    *ngIf="!item.hasVariants && item.phanTramGiamGia">
+                                    -{{ item.phanTramGiamGia }}%
+                                </span>
+
+                                <span class="product-tag"
+                                    *ngIf="item.hasVariants && item.phanTramGiamGiaBienThe">
+                                    -{{ item.phanTramGiamGiaBienThe }}%
+                                </span>
                                 <div class="actions">
                                     <a href="chitietsanpham/{{ item.slug }}" class="icon-btn popup-content"><i class="far fa-eye"></i></a>
                                 </div>
@@ -59,8 +168,58 @@
                                         <span>Đã bán: {{item.luotMua | numberShort}}</span>
                                     </div>
                                 </div>
-                                <span class="price" *ngIf="item.giaKhuyenMai == 0">{{ item.gia | number}}</span>
-                                <span class="price" *ngIf="item.giaKhuyenMai > 0">{{ item.giaKhuyenMai | number}}<del>{{ item.gia | number }}</del></span>
+                                <div *ngIf="!item.hasVariants">
+                                    <span class="price" *ngIf="item.giaKhuyenMai == 0">
+                                        {{ item.gia | number }} đ
+                                    </span>
+                                    <span class="price" *ngIf="item.giaKhuyenMai > 0">
+                                        {{ item.giaKhuyenMai | number }} đ
+                                        <del>{{ item.gia | number }} đ</del>
+                                    </span>
+                                </div>
+                                
+                                <div *ngIf="item.hasVariants">
+                                    <!-- Không có khuyến mãi -->
+                                    <span class="price" *ngIf="!item.giaKhuyenMaiBienTheMin || item.giaKhuyenMaiBienTheMin == 0">
+                                        <ng-container *ngIf="item.giaBienTheMin == item.giaBienTheMax">
+                                            {{ item.giaBienTheMin | number }} đ
+                                        </ng-container>
+                                        <ng-container *ngIf="item.giaBienTheMin != item.giaBienTheMax">
+                                            {{ item.giaBienTheMin | number }} đ
+                                            -
+                                            {{ item.giaBienTheMax | number }} đ
+                                        </ng-container>
+                                    </span>
+
+                                    <!-- Có khuyến mãi -->
+                                    <span class="price" *ngIf="item.giaKhuyenMaiBienTheMin">
+                                        <!-- Giá KM giống nhau -->
+                                        <ng-container *ngIf="item.giaKhuyenMaiBienTheMin == item.giaKhuyenMaiBienTheMax">
+                                            {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                                        </ng-container>
+                                        <!-- Giá KM khác nhau -->
+                                        <ng-container *ngIf="item.giaKhuyenMaiBienTheMin != item.giaKhuyenMaiBienTheMax">
+                                            {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                                            -
+                                            {{ item.giaKhuyenMaiBienTheMax | number }} đ
+                                        </ng-container>
+                                        <!-- Giá gốc -->
+                                        <del>
+                                            <!-- Giá gốc giống nhau -->
+                                            <ng-container *ngIf="item.giaBienTheMin == item.giaBienTheMax">
+                                                {{ item.giaBienTheMin | number }} đ
+                                            </ng-container>
+
+                                            <!-- Giá gốc khác nhau -->
+                                            <ng-container *ngIf="item.giaBienTheMin != item.giaBienTheMax">
+                                                {{ item.giaBienTheMin | number }} đ
+                                                -
+                                                {{ item.giaBienTheMax | number }} đ
+                                            </ng-container>
+                                        </del>
+                                    </span>
+                                </div>
+
                                 <div class="gift-wrapper mt-2">
                                     <div *ngIf="item.quaTangGia > 0; else emptyGift">
                                         <i class="fa-duotone fa-solid fa-gifts fa-bounce fa-xl" style="--fa-primary-color: rgb(234, 68, 142); --fa-secondary-color: rgb(234, 68, 142);"></i>
@@ -74,7 +233,7 @@
                                         </div>
                                     </ng-template>
                                 </div>
-                                <div [innerHTML]="item.moTaNgan"></div>
+                                <div [innerHTML]="item?.moTaNgan | safeHtml"></div>
                                 <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="javascript:void(0)" (click)="addToCart(item)" style="font-size: 15px;"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
                                 <a *ngIf="item.hasVariants" class="ot-btn style7 w-100 mt-auto w-100" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
                             </div>
@@ -85,32 +244,37 @@
                     <ul>
                         <!-- Previous -->
                         <li>
-                        <a
-                            href="javascript:void(0)"
-                            [class.disabled]="page === 1"
-                            (click)="page > 1 && changePage(page - 1)">
-                            <i class="fa-regular fa-angle-left"></i>
-                        </a>
+                            <a
+                                href="javascript:void(0)"
+                                [class.disabled]="page === 1"
+                                (click)="page > 1 && changePage(page - 1)">
+                                <i class="fa-regular fa-angle-left"></i>
+                            </a>
                         </li>
 
                         <!-- Page numbers -->
-                        <li *ngFor="let p of getTotalPagesArray()">
-                        <a
-                            href="javascript:void(0)"
-                            [class.active]="p === page"
-                            (click)="changePage(p)">
-                            {{ p }}
-                        </a>
+                        <li *ngFor="let p of getVisiblePages()">
+                            <a
+                                *ngIf="p !== '...'; else dots"
+                                href="javascript:void(0)"
+                                [class.active]="p === page"
+                                (click)="changePage(p)">
+                                {{ p }}
+                            </a>
+
+                            <ng-template #dots>
+                                <a>...</a>
+                            </ng-template>
                         </li>
 
                         <!-- Next -->
                         <li>
-                        <a
-                            href="javascript:void(0)"
-                            [class.disabled]="page === totalPages"
-                            (click)="page < totalPages && changePage(page + 1)">
-                            <i class="fa-regular fa-angle-right"></i>
-                        </a>
+                            <a
+                                href="javascript:void(0)"
+                                [class.disabled]="page === totalPages"
+                                (click)="page < totalPages && changePage(page + 1)">
+                                <i class="fa-regular fa-angle-right"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -120,7 +284,18 @@
                 <div class="row gy-30">
                     <div class="col-12" *ngFor="let item of products">
                         <div class="ot-product product-list bg-white" >
-                            <div class="product-img"><img [src]="getImageUrl(item.anh)" alt="Product Image"> <span class="product-tag" *ngIf="item.giaKhuyenMai"><span class="tag">-{{ item.phanTramGiamGia }}%</span></span></div>
+                            <div class="product-img">
+                                <img [src]="getImageUrl(item.anh)" alt="Product Image"> 
+                                <span class="product-tag"
+                                    *ngIf="!item.hasVariants && item.phanTramGiamGia">
+                                    -{{ item.phanTramGiamGia }}%
+                                </span>
+
+                                <span class="product-tag"
+                                    *ngIf="item.hasVariants && item.phanTramGiamGiaBienThe">
+                                    -{{ item.phanTramGiamGiaBienThe }}%
+                                </span>
+                            </div>
                             <div class="product-content">
                             <h3 class="box-title"><a href="chitietsanpham/{{ item.slug }}">{{ item.ten }}</a></h3>
                             <div class="row">
@@ -131,15 +306,53 @@
                                     <span>Đã bán: {{item.luotMua | numberShort}}</span>
                                 </div>
                             </div>
-                            <span class="price" *ngIf="item.giaKhuyenMai == 0">{{ item.gia | number}}</span>
-                            <span class="price" *ngIf="item.giaKhuyenMai > 0">{{ item.giaKhuyenMai | number}}<del>{{ item.gia | number }}</del></span>
+                            <div *ngIf="!item.hasVariants">
+                                <span class="price" *ngIf="item.giaKhuyenMai == 0">
+                                    {{ item.gia | number }} đ
+                                </span>
+                                <span class="price" *ngIf="item.giaKhuyenMai > 0">
+                                    {{ item.giaKhuyenMai | number }} đ
+                                    <del>{{ item.gia | number }} đ</del>
+                                </span>
+                            </div>
+                            
+                            <div *ngIf="item.hasVariants">
+                                <!-- Không có khuyến mãi -->
+                                <span class="price" *ngIf="!item.giaKhuyenMaiBienTheMin || item.giaKhuyenMaiBienTheMin == 0">
+                                    <ng-container *ngIf="item.giaBienTheMin == item.giaBienTheMax">
+                                        {{ item.giaBienTheMin | number }} đ
+                                    </ng-container>
+                                    <ng-container *ngIf="item.giaBienTheMin != item.giaBienTheMax">
+                                        {{ item.giaBienTheMin | number }} đ
+                                        -
+                                        {{ item.giaBienTheMax | number }} đ
+                                    </ng-container>
+                                </span>
+
+                                <!-- Có khuyến mãi -->
+                                <span class="price" *ngIf="item.giaKhuyenMaiBienTheMin">
+                                    <ng-container *ngIf="item.giaKhuyenMaiBienTheMin == item.giaKhuyenMaiBienTheMax">
+                                        {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                                    </ng-container>
+                                    <ng-container *ngIf="item.giaKhuyenMaiBienTheMin != item.giaKhuyenMaiBienTheMax">
+                                        {{ item.giaKhuyenMaiBienTheMin | number }} đ
+                                        -
+                                        {{ item.giaKhuyenMaiBienTheMax | number }} đ
+                                    </ng-container>
+                                    <del style="margin-left: 5px;">
+                                        {{ item.giaBienTheMin | number }} đ
+                                        -
+                                        {{ item.giaBienTheMax | number }} đ
+                                    </del>
+                                </span>
+                            </div>
                             <div class="woocommerce-product-rating" *ngIf="item.quaTangGia > 0" style="margin-top: 10px;">
                                 <div>
                                     <i class="fa-duotone fa-solid fa-gifts fa-bounce fa-xl" style="--fa-primary-color: rgb(234, 68, 142); --fa-secondary-color: rgb(234, 68, 142);"></i>
                                     <span class="gift-product">Tặng: {{ item.quaTangTen }}</span>
                                 </div>
                             </div>
-                            <div class="content" [innerHTML]="item.moTaNgan"></div>
+                            <div class="content" [innerHTML]="item?.moTaNgan | safeHtml"></div>
                             <div class="btn-wrap">
                                 <a *ngIf="!item.hasVariants" class="ot-btn style7 w-100 mt-auto" href="javascript:void(0)" (click)="addToCart(item)"><i class="fa-light fa-basket-shopping me-1"></i> Thêm vào giỏ hàng</a>
                                 <a *ngIf="item.hasVariants" class="ot-btn style7 w-100 mt-auto" href="chitietsanpham/{{ item.slug }}"><i class="fa-regular fa-magnifying-glass me-1"></i> Xem chi tiết</a>
@@ -156,32 +369,37 @@
                     <ul>
                         <!-- Previous -->
                         <li>
-                        <a
-                            href="javascript:void(0)"
-                            [class.disabled]="page === 1"
-                            (click)="page > 1 && changePage(page - 1)">
-                            <i class="fa-regular fa-angle-left"></i>
-                        </a>
+                            <a
+                                href="javascript:void(0)"
+                                [class.disabled]="page === 1"
+                                (click)="page > 1 && changePage(page - 1)">
+                                <i class="fa-regular fa-angle-left"></i>
+                            </a>
                         </li>
 
                         <!-- Page numbers -->
-                        <li *ngFor="let p of getTotalPagesArray()">
-                        <a
-                            href="javascript:void(0)"
-                            [class.active]="p === page"
-                            (click)="changePage(p)">
-                            {{ p }}
-                        </a>
+                        <li *ngFor="let p of getVisiblePages()">
+                            <a
+                                *ngIf="p !== '...'; else dots"
+                                href="javascript:void(0)"
+                                [class.active]="p === page"
+                                (click)="changePage(p)">
+                                {{ p }}
+                            </a>
+
+                            <ng-template #dots>
+                                <a>...</a>
+                            </ng-template>
                         </li>
 
                         <!-- Next -->
                         <li>
-                        <a
-                            href="javascript:void(0)"
-                            [class.disabled]="page === totalPages"
-                            (click)="page < totalPages && changePage(page + 1)">
-                            <i class="fa-regular fa-angle-right"></i>
-                        </a>
+                            <a
+                                href="javascript:void(0)"
+                                [class.disabled]="page === totalPages"
+                                (click)="page < totalPages && changePage(page + 1)">
+                                <i class="fa-regular fa-angle-right"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>

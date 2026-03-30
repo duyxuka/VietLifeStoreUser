@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { ApiService } from '../../api.service';
 import { environment } from '../../enviroments/enviroment';
 import { CartService } from '../../cart.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
+import { AuthService } from '../../auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-trangchu',
@@ -29,6 +32,8 @@ export class TrangchuComponent implements OnInit {
 
   // 🔥 Base URL ảnh
   mediaBaseUrl = environment.mediaUrl;
+  isBrowser = false;
+  isMobile = false;
 
   customOptions: OwlOptions = {
     loop: true,
@@ -60,9 +65,29 @@ export class TrangchuComponent implements OnInit {
     }
   };
 
-  constructor(private apiService: ApiService, private sanitizer: DomSanitizer, private cartService: CartService) { }
+  vouchers: any[] = [];
+  savedVoucherIds: Set<string> = new Set();
+  isLoggedIn = false;
+
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer, private cartService: CartService, @Inject(PLATFORM_ID) private platformId: Object,
+    private authService: AuthService, private toastr: ToastrService,) { }
 
   ngOnInit(): void {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    if (this.isBrowser) {
+      this.isMobile = window.innerWidth <= 768;
+    }
+    this.authService.getProfile().subscribe({
+      next: (res) => {
+        this.isLoggedIn = !!res;
+        this.loadVouchers();
+      },
+      error: () => {
+        this.isLoggedIn = false;
+        this.loadVouchers();
+      }
+    });
     this.loadDanhMuc();
     this.loadBanner();
     this.selectSanPhamBanChay();
@@ -76,6 +101,50 @@ export class TrangchuComponent implements OnInit {
     this.apiService.getAllBanner().subscribe(res => {
       this.banners = res || [];
     });
+  }
+
+  loadVouchers(): void {
+    this.apiService.getListAllVouchers(1).subscribe({
+      next: (res) => {
+        this.vouchers = res || [];
+        if (this.isLoggedIn) {
+          this.loadMyVouchers();
+        }
+      },
+      error: () => this.vouchers = []
+    });
+  }
+
+  loadMyVouchers(): void {
+    this.apiService.getMyVouchers().subscribe({
+      next: (res: any[]) => {
+        this.savedVoucherIds = new Set(res.map(v => v.id));
+      },
+      error: () => {
+        this.savedVoucherIds = new Set();
+      }
+    });
+  }
+
+  saveVoucher(voucherId: string): void {
+    if (!this.isLoggedIn) {
+      this.toastr.warning("Bạn cần đăng nhập để lưu voucher")
+      return;
+    }
+    if (this.savedVoucherIds.has(voucherId)) return;
+
+    this.apiService.nhanVoucher(voucherId).subscribe({
+      next: () => {
+        this.savedVoucherIds.add(voucherId);
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    });
+  }
+
+  isSaved(voucherId: string): boolean {
+    return this.savedVoucherIds.has(voucherId);
   }
 
   loadDanhMuc(): void {
@@ -119,6 +188,18 @@ export class TrangchuComponent implements OnInit {
 
     this.loadSanPham();
   }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (!this.isBrowser) return;
+
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  getBannerImage(banner: any): string {
+    return this.isMobile && banner.anhMobile ? banner.anhMobile : banner.anh;
+  }
+
   // ================= PAGING =================
   changePage(p: any): void {
     if (p === this.page) return;

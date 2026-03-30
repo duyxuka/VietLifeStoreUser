@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
   <div class="container">
     <div class="breadcumb-content">
       <h1 class="breadcumb-title">{{ article?.ten }}</h1>
@@ -31,7 +33,7 @@
               </a>
             </div>
             <h2 class="blog-title">{{ article.ten }}</h2>
-            <div [innerHTML]="article.mota"></div>
+            <div [innerHTML]="article?.mota | safeHtml"></div>
           </div>
         </div>
       </div>

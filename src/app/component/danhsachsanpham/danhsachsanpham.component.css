@@ -49,3 +49,38 @@
   pointer-events: none;
   cursor: not-allowed;
 }
+
+.btn-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-wrap a.ot-btn {
+  flex: 1;
+  /* bỏ mt-auto nếu đang dùng flex row */
+}
+
+.btn-wrap .actions {
+  flex-shrink: 0;
+}
+
+.btn-wrap .actions .icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+
+@media (min-width: 992px) {
+  .ot-sort-bar {
+    position: sticky;
+    top: 110px;
+    /* khoảng cách từ header */
+    z-index: 24;
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+  }
+}

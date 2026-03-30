@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { environment } from '../../enviroments/enviroment';
 import { CartService } from '../../cart.service';
+import { AuthService } from '../../auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-danhsachsanpham',
@@ -22,11 +24,25 @@ export class DanhsachsanphamComponent implements OnInit {
 
   // 🔥 Base URL ảnh
   mediaBaseUrl = environment.mediaUrl;
+  vouchers: any[] = [];
+  savedVoucherIds: Set<string> = new Set();
+  isLoggedIn = false;
 
-  constructor(private apiService: ApiService,private cartService: CartService) { }
+
+  constructor(private apiService: ApiService, private cartService: CartService, private authService: AuthService, private toastr: ToastrService,) { }
 
   ngOnInit() {
     this.loadData();
+    this.authService.getProfile().subscribe({
+      next: (res) => {
+        this.isLoggedIn = !!res;
+        this.loadVouchers();
+      },
+      error: () => {
+        this.isLoggedIn = false;
+        this.loadVouchers();
+      }
+    });
   }
 
   loadData() {
@@ -43,6 +59,50 @@ export class DanhsachsanphamComponent implements OnInit {
     });
   }
 
+  loadVouchers(): void {
+    this.apiService.getListAllVouchers(1).subscribe({
+      next: (res) => {
+        this.vouchers = res || [];
+        if (this.isLoggedIn) {
+          this.loadMyVouchers();
+        }
+      },
+      error: () => this.vouchers = []
+    });
+  }
+
+  loadMyVouchers(): void {
+    this.apiService.getMyVouchers().subscribe({
+      next: (res: any[]) => {
+        this.savedVoucherIds = new Set(res.map(v => v.id));
+      },
+      error: () => {
+        this.savedVoucherIds = new Set();
+      }
+    });
+  }
+
+  saveVoucher(voucherId: string): void {
+    if (!this.isLoggedIn) {
+      this.toastr.warning("Bạn cần đăng nhập để lưu voucher")
+      return;
+    }
+    if (this.savedVoucherIds.has(voucherId)) return;
+
+    this.apiService.nhanVoucher(voucherId).subscribe({
+      next: () => {
+        this.savedVoucherIds.add(voucherId);
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    });
+  }
+
+  isSaved(voucherId: string): boolean {
+    return this.savedVoucherIds.has(voucherId);
+  }
+
   // ================= IMAGE HELPER =================
 
   getImageUrl(fileName: string): string {
@@ -57,26 +117,11 @@ export class DanhsachsanphamComponent implements OnInit {
     this.loadData();
   }
 
-  // ================= PAGINATION =================
-
-  changePage(p: number) {
+  // ================= PAGING =================
+  changePage(p: any): void {
     if (p === this.page) return;
     this.page = p;
     this.loadData();
-  }
-
-  prev() {
-    if (this.page > 1) {
-      this.page--;
-      this.loadData();
-    }
-  }
-
-  next() {
-    if (this.page < this.totalPages) {
-      this.page++;
-      this.loadData();
-    }
   }
 
   get fromItem(): number {
@@ -84,11 +129,45 @@ export class DanhsachsanphamComponent implements OnInit {
   }
 
   get toItem(): number {
-    return Math.ceil(this.total / this.pageSize);
+    return Math.min(this.page * this.pageSize, this.total);
   }
 
-  getTotalPagesArray(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  getVisiblePages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+
+    const maxVisible = 3;
+    const half = Math.floor(maxVisible / 2);
+
+    let start = Math.max(1, this.page - half);
+    let end = Math.min(this.totalPages, start + maxVisible - 1);
+
+    // Nếu chưa đủ 5 trang thì lùi lại
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    // Nếu có trang trước đó → thêm 1 + ...
+    if (start > 1) {
+      pages.push(1);
+      if (start > 2) {
+        pages.push('...');
+      }
+    }
+
+    // Các trang chính
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Nếu còn trang phía sau → thêm ... + trang cuối
+    if (end < this.totalPages) {
+      if (end < this.totalPages - 1) {
+        pages.push('...');
+      }
+      pages.push(this.totalPages);
+    }
+
+    return pages;
   }
 
   addToCart(product: any): void {

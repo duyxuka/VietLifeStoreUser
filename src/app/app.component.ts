@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { CartService } from './cart.service';
 import { environment } from './enviroments/enviroment';
@@ -6,6 +6,7 @@ import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { TrackingService } from './core/tracking.service';
 
 @Component({
   selector: 'app-root',
@@ -35,12 +36,15 @@ export class AppComponent implements OnInit {
   showDropdown = false;
   searchTimeout: any;
 
+  isUserMenuOpen = false;
+
   constructor(private apiService: ApiService, private cartService: CartService,
     @Inject(PLATFORM_ID) private platformId: Object, private authService: AuthService,
-    private router: Router,
+    private router: Router,private trackingService: TrackingService
   ) { }
 
   ngOnInit(): void {
+    this.trackingService.startConnection();
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     if (this.isBrowser) {
@@ -60,6 +64,14 @@ export class AppComponent implements OnInit {
 
     this.loadDanhMucSP();
     this.loadDanhMucCamNang();
+  }
+  @HostListener('document:click')
+  closeMenu() {
+    this.isUserMenuOpen = false;
+  }
+  toggleUserMenu(event: Event) {
+    event.stopPropagation();
+    this.isUserMenuOpen = !this.isUserMenuOpen;
   }
   loadDanhMucSP(): void {
     this.apiService.getDanhMucSPListAll().subscribe(res => {

@@ -28,7 +28,8 @@ export class DangkyComponent {
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{9,11}$')]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      birthDay: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -50,7 +51,8 @@ export class DangkyComponent {
       email: value.email,
       password: value.password,
       name: value.fullName,
-      phoneNumber: value.phoneNumber
+      phoneNumber: value.phoneNumber,
+      birthDay: value.birthDay
     };
 
     this.authService.register(registerData).pipe(

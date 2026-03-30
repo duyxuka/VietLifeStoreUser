@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../api.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { environment } from '../../enviroments/enviroment';
 import { CartService } from '../../cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../auth.service';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 
 interface ThuocTinhDto {
   ten: string;
@@ -43,6 +42,12 @@ interface SanPhamDto {
   bienThes: SanPhamBienTheDto[];
   quaTangTen: string;
   quaTangGia: number;
+  hasVariants: boolean;
+  giaBienTheMin?: number;
+  giaBienTheMax?: number;
+  giaKhuyenMaiBienTheMin?: number;
+  giaKhuyenMaiBienTheMax?: number;
+  phanTramGiamGiaBienThe?: number;
 }
 
 interface SanPhamReviewDto {
@@ -55,7 +60,8 @@ interface SanPhamReviewDto {
   soSao: number;
   creationTime: string;
 }
-
+const VIEW_COOLDOWN_MS = 10 * 60 * 1000;
+const VIEW_STORAGE_KEY = 'sp_viewed';
 @Component({
   selector: 'app-chitietsanpham',
   templateUrl: './chitietsanpham.component.html',
@@ -108,12 +114,59 @@ export class ChitietsanphamComponent implements OnInit {
   ];
   hasReviewed = false;
 
+  thumbOptions: OwlOptions = {
+    loop: false,
+    margin: 10,
+    nav: true,
+    dots: false,
+    navSpeed: 700,
+    responsive: {
+      0: { items: 3 },
+      576: { items: 6 },
+      768: { items: 5 },
+      992: { items: 6 },
+      1200: { items: 7 },
+      1400: { items: 8 },  // thêm nếu cần cho màn lớn hơn
+    },
+    navText: [
+      '<i class="fa-regular fa-angle-left"></i>',
+      '<i class="fa-regular fa-angle-right"></i>'
+    ]
+  };
+  relatedOptions: OwlOptions = {
+    loop: true,
+    margin: 20,
+    nav: true,
+    dots: false,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: true,
+    navSpeed: 700,
+    center: true,
+    responsive: {
+      0: { items: 1 },
+      576: { items: 2 },
+      768: { items: 2 },
+      992: { items: 3 },
+      1200: { items: 4 },
+      1400: { items: 5 },
+    },
+    navText: [
+      '<i class="fa-regular fa-angle-left"></i>',
+      '<i class="fa-regular fa-angle-right"></i>'
+    ]
+  };
+
+  vouchers: any[] = [];
+  savedVoucherIds: Set<string> = new Set();
+  isLoggedIn = false;
+
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
     private cartService: CartService,
     private toastr: ToastrService,
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
   // ===================== LIFECYCLE =====================
@@ -121,11 +174,65 @@ export class ChitietsanphamComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.slug = params['slug'];
-      if (this.slug) {
-        this.loadProduct();
+      if (this.slug) this.loadProduct(); // loadProduct sẽ gọi loadVouchers bên trong
+    });
+
+    this.authService.getProfile().subscribe({
+      next: (res) => { this.isLoggedIn = !!res; },
+      error: () => { this.isLoggedIn = false; }
+    });
+  }
+
+  loadVouchers(): void {
+    if (!this.product?.id) return;
+
+    this.apiService.getVouchersBySanPham(this.product.id).subscribe({
+      next: (res) => {
+        this.vouchers = res || [];
+        if (this.isLoggedIn) {
+          this.apiService.getMyVouchers().subscribe({
+            next: (my: any[]) => {
+              this.savedVoucherIds = new Set(my.map(v => v.id));
+            }
+          });
+        }
+      },
+      error: () => this.vouchers = []
+    });
+  }
+
+  loadMyVouchers(): void {
+    this.apiService.getMyVouchers().subscribe({
+      next: (res: any[]) => {
+        this.savedVoucherIds = new Set(res.map(v => v.id));
+      },
+      error: () => {
+        this.savedVoucherIds = new Set();
       }
     });
   }
+
+  saveVoucher(voucherId: string): void {
+    if (!this.isLoggedIn) {
+      this.toastr.warning("Bạn cần đăng nhập để lưu voucher")
+      return;
+    }
+    if (this.savedVoucherIds.has(voucherId)) return;
+
+    this.apiService.nhanVoucher(voucherId).subscribe({
+      next: () => {
+        this.savedVoucherIds.add(voucherId);
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    });
+  }
+
+  isSaved(voucherId: string): boolean {
+    return this.savedVoucherIds.has(voucherId);
+  }
+
 
   // ===================== PRODUCT METHODS =====================
 
@@ -144,17 +251,27 @@ export class ChitietsanphamComponent implements OnInit {
         this.images = [];
         if (res.anh) this.images.push(res.anh);
         if (res.anhPhu?.length) this.images.push(...res.anhPhu);
-
+        if (res.id) {
+          this.tryTangLuotXem(res.id);
+        }
         // Load sản phẩm liên quan
         if (res.danhMucSlug) {
           this.apiService.getByDanhMucSP(res.danhMucSlug).subscribe((related) => {
             this.relatedProducts = related;
           });
         }
-
         // Load đánh giá
         this.loadReviews(res.id);
-
+        this.authService.getProfile().subscribe({
+          next: (profile) => {
+            this.isLoggedIn = !!profile;
+            this.loadVouchers();
+          },
+          error: () => {
+            this.isLoggedIn = false;
+            this.loadVouchers();
+          }
+        });
         // Reset lựa chọn biến thể
         this.selectedOptions = {};
         this.selectedVariant = null;
@@ -308,7 +425,7 @@ export class ChitietsanphamComponent implements OnInit {
 
   submitReview(): void {
     if (!this.authService.isLoggedIn()) {
-      this.toastr.warning('Bạn cần đăng nhập để bình luận');
+      this.toastr.warning('Bạn cần đăng nhập để đánh giá');
       return;
     }
     if (!this.product) return;
@@ -412,5 +529,81 @@ export class ChitietsanphamComponent implements OnInit {
   // Trả về mảng [1..5] để dùng *ngFor render sao
   getStarArray(): number[] {
     return [1, 2, 3, 4, 5];
+  }
+
+  private tryTangLuotXem(sanPhamId: string): void {
+    const now = Date.now();
+    const cooldownMs = VIEW_COOLDOWN_MS; // 2 phút
+
+    console.log(`[LuotXem] Kiểm tra lượt xem - sanPhamId: ${sanPhamId}`);
+
+    // Đọc localStorage
+    let viewed: Record<string, number> = {};
+    const raw = localStorage.getItem(VIEW_STORAGE_KEY);
+
+    if (raw) {
+      try {
+        viewed = JSON.parse(raw);
+        console.log("[LuotXem] Đã đọc localStorage:", viewed);
+      } catch (e) {
+        console.warn("[LuotXem] Lỗi parse localStorage → reset");
+        viewed = {};
+      }
+    }
+
+    const lastViewed = viewed[sanPhamId];
+
+    // Nếu đã xem trước đó
+    if (lastViewed) {
+      const elapsed = now - lastViewed;
+      const elapsedMinutes = (elapsed / 60000).toFixed(2);
+
+      console.log(`[LuotXem] Lần xem trước: ${elapsedMinutes} phút trước`);
+
+      if (elapsed < cooldownMs) {
+        const remaining = ((cooldownMs - elapsed) / 60000).toFixed(2);
+        console.log(`[LuotXem] ❌ Còn trong cooldown (${remaining} phút) → BỎ QUA`);
+        return;
+      }
+    }
+
+    console.log(`[LuotXem] ✅ Gọi API tăng lượt xem`);
+
+    this.apiService.tangLuotXem(sanPhamId).subscribe({
+      next: () => {
+        console.log(`[LuotXem] API thành công → cập nhật localStorage`);
+        viewed[sanPhamId] = now;
+
+        this.cleanOldViewed(viewed);
+
+        localStorage.setItem(
+          VIEW_STORAGE_KEY,
+          JSON.stringify(viewed)
+        );
+      },
+      error: (err) => {
+        console.error(`[LuotXem] API lỗi`, err);
+
+        // vẫn lưu để tránh spam API
+        viewed[sanPhamId] = now;
+
+        this.cleanOldViewed(viewed);
+
+        localStorage.setItem(
+          VIEW_STORAGE_KEY,
+          JSON.stringify(viewed)
+        );
+      }
+    });
+  }
+
+  private cleanOldViewed(viewed: Record<string, number>): void {
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24h
+
+    Object.keys(viewed).forEach(id => {
+      if (viewed[id] < cutoff) {
+        delete viewed[id];
+      }
+    });
   }
 }

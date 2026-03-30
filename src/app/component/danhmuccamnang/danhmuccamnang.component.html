@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
         <div class="breadcumb-content">
             <h1 class="breadcumb-title">Danh mục cẩm nang</h1>
@@ -35,7 +37,7 @@
                         <h2 class="blog-title">
                             <a href="/chitietcamnang/{{item.slug}}">{{item.ten}}</a>
                         </h2>
-                        <div class="blog-text" [innerHTML]="item.mota + ' ...'"></div>
+                        <div class="blog-text" [innerHTML]="item?.mota + ' ...' | safeHtml"></div>
                         <a href="/chitietcamnang/{{item.slug}}" class="ot-btn">Xem thêm<i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>

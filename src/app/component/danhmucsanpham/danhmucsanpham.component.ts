@@ -5,6 +5,8 @@ import { environment } from '../../enviroments/enviroment';
 import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../auth.service';
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-danhmucsanpham',
@@ -28,35 +30,107 @@ export class DanhmucsanphamComponent implements OnInit {
   slug?: string;
   // 🔥 Base URL ảnh
   mediaBaseUrl = environment.mediaUrl;
+  vouchers: any[] = [];
+  savedVoucherIds: Set<string> = new Set();
+  isLoggedIn = false;
+  danhMucId: string | null = null;
+  bannerUrl: string = 'assets/img/bg/breadcrumb_bg_01.jpg';
+  currentCategoryName: string = 'Danh mục sản phẩm';
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private authService: AuthService,
+    private cartService: CartService,
   ) { }
 
   // ================= INIT =================
   ngOnInit(): void {
+    // Bước 1 — Load categories trước
+    this.apiService.getDanhMucSPListAll().subscribe(res => {
+      this.categories = res || [];
 
-    // Load danh mục sidebar
-    this.loadCategories();
+      // Bước 2 — Sau khi có categories, theo dõi route
+      this.route.params.subscribe(params => {
+        this.slug = params['slug'];
+        this.page = 1;
+        this.loadData();
 
-    // Theo dõi slug trên URL
-    this.route.params.subscribe(params => {
-      this.slug = params['slug'];   // undefined nếu không có
-      this.page = 1;
-      this.loadData();
+        // Bước 3 — Tìm danhMucId từ slug
+        if (this.slug) {
+          const dm = this.categories.find(c => c.slug === this.slug);
+          this.danhMucId = dm?.id || null;
+          this.bannerUrl = dm?.anhBanner
+            ? this.mediaBaseUrl + dm.anhBanner
+            : 'assets/img/bg/breadcrumb_bg_01.jpg';
+          this.currentCategoryName = dm?.ten || 'Danh mục sản phẩm';
+        } else {
+          this.danhMucId = null;
+          this.bannerUrl = 'assets/img/bg/breadcrumb_bg_01.jpg';
+        }
+
+        // Bước 4 — Load profile rồi mới load voucher
+        this.authService.getProfile().subscribe({
+          next: (profile) => {
+            this.isLoggedIn = !!profile;
+            this.loadVouchers();
+          },
+          error: () => {
+            this.isLoggedIn = false;
+            this.loadVouchers();
+          }
+        });
+      });
     });
   }
 
-  // ================= LOAD DANH MỤC =================
-  loadCategories(): void {
-    this.apiService.getDanhMucSPListAll()
-      .subscribe(res => {
-        this.categories = res;
-      });
+  loadVouchers(): void {
+    const obs = this.danhMucId
+      ? this.apiService.getVouchersByDanhMuc(this.danhMucId)
+      : this.apiService.getListAllVouchers(1); // truyền phamVi=1 khi không có danh mục
+
+    obs.subscribe({
+      next: (res) => {
+        this.vouchers = res || [];
+        if (this.isLoggedIn) this.loadMyVouchers();
+      },
+      error: () => this.vouchers = []
+    });
+  }
+
+  loadMyVouchers(): void {
+    this.apiService.getMyVouchers().subscribe({
+      next: (res: any[]) => {
+        this.savedVoucherIds = new Set(res.map(v => v.id));
+      },
+      error: () => {
+        this.savedVoucherIds = new Set();
+      }
+    });
+  }
+
+  saveVoucher(voucherId: string): void {
+    if (!this.isLoggedIn) {
+      this.toastr.warning("Bạn cần đăng nhập để lưu voucher")
+      return;
+    }
+    if (this.savedVoucherIds.has(voucherId)) return;
+
+    this.apiService.nhanVoucher(voucherId).subscribe({
+      next: () => {
+        this.savedVoucherIds.add(voucherId);
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    });
+  }
+
+  isSaved(voucherId: string): boolean {
+    return this.savedVoucherIds.has(voucherId);
   }
 
   // ================= LOAD SẢN PHẨM =================
@@ -93,7 +167,7 @@ export class DanhmucsanphamComponent implements OnInit {
   }
 
   // ================= PAGING =================
-  changePage(p: number): void {
+  changePage(p: any): void {
     if (p === this.page) return;
     this.page = p;
     this.loadData();
@@ -107,8 +181,42 @@ export class DanhmucsanphamComponent implements OnInit {
     return Math.min(this.page * this.pageSize, this.total);
   }
 
-  getTotalPagesArray(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  getVisiblePages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+
+    const maxVisible = 3;
+    const half = Math.floor(maxVisible / 2);
+
+    let start = Math.max(1, this.page - half);
+    let end = Math.min(this.totalPages, start + maxVisible - 1);
+
+    // Nếu chưa đủ 5 trang thì lùi lại
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    // Nếu có trang trước đó → thêm 1 + ...
+    if (start > 1) {
+      pages.push(1);
+      if (start > 2) {
+        pages.push('...');
+      }
+    }
+
+    // Các trang chính
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Nếu còn trang phía sau → thêm ... + trang cuối
+    if (end < this.totalPages) {
+      if (end < this.totalPages - 1) {
+        pages.push('...');
+      }
+      pages.push(this.totalPages);
+    }
+
+    return pages;
   }
   // ================= IMAGE HELPER =================
 
@@ -117,29 +225,18 @@ export class DanhmucsanphamComponent implements OnInit {
   }
 
   addToCart(product: any): void {
-     if (!isPlatformBrowser(this.platformId)) return;
     const productToAdd = {
       id: product.id,
-      name: product.ten,
-      image: product.anh,
-      price: product.gia,
-      salePrice: product.giaKhuyenMai,
-      quantity: 1,
-      priceOrder: product.giaKhuyenMai > 0 ? product.giaKhuyenMai : product.gia,
-      slug: product.slug
+      ten: product.ten,
+      anh: product.anh,
+      gia: product.gia,
+      giaKhuyenMai: product.giaKhuyenMai,
+      slug: product.slug,
+      phanTramGiamGia: product.phanTramGiamGia,
+      tenQuaTang: product.quaTangGia > 0 ? product.quaTangTen : null,
+      giaQuaTang: product.quaTangGia > 0 ? product.quaTangGia : 0
     };
-    // 🔥 Lấy giỏ hàng từ localStorage
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-    const existingIndex = cart.findIndex((item: any) => item.id === productToAdd.id);
-
-    if (existingIndex !== -1) {
-      cart[existingIndex].quantity += 1;
-    } else {
-      cart.push(productToAdd);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    this.toastr.success('Đã thêm vào giỏ hàng', 'Thành công');
+    this.cartService.addToCart(productToAdd);
   }
 }

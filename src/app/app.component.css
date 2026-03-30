@@ -76,3 +76,31 @@
 }
 .ot-item-has-children>a:after { content: "\f067"; }
 .ot-item-has-children.ot-active>a:after { content: "\f068"; }
+
+.user-menu {
+  position: relative;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 57px;
+  width: 180px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  padding: 10px 0;
+  z-index: 9999;
+}
+
+.user-dropdown-menu a {
+  display: block;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #333;
+  transition: 0.2s;
+}
+
+.user-dropdown-menu a:hover {
+  background: #f5f5f5;
+}

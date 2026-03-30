@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Thanh toán</h1>
@@ -92,84 +94,146 @@
                 </table>
                 <div class="row">
                     <div class="col-12">
-                        <div class="woocommerce-form-coupon" style="padding:20px">
+                        <div class="woocommerce-form-coupon">
 
-                            <h6>Áp dụng Voucher</h6>
+                        <!-- Nhập mã thủ công -->
+                        <div class="voucher-input-wrap">
+                            <i class="fa-regular fa-ticket" style="color: #ee4d2d;"></i>
+                            <input
+                            type="text"
+                            class="voucher-input-field"
+                            formControlName="voucherCode"
+                            placeholder="Nhập mã voucher...">
+                            <button type="button" class="voucher-apply-btn" (click)="applyVoucherByCode()">
+                            Áp dụng
+                            </button>
+                        </div>
 
-                            <!-- nhập mã voucher -->
-                            <div class="voucher-input">
-                                <input 
-                                type="text"
-                                class="form-control"
-                                formControlName="voucherCode"
-                                name="voucherCode"
-                                placeholder="Nhập mã voucher">
+                        <!-- Voucher đang dùng -->
+                        <div class="selected-voucher-tag" *ngIf="selectedVoucher">
+                            <i class="fa-solid fa-tag me-1"></i>
+                            <span>{{ selectedVoucher.maVoucher }}</span>
+                            <span class="sv-discount"> -{{ discount | number }}đ</span>
+                            <button type="button" class="sv-remove" (click)="removeVoucher()" title="Bỏ voucher">
+                            <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
 
-                                <button 
-                                type="button"
-                                class="btn btn-voucher"
-                                (click)="applyVoucherByCode()">
-                                Áp dụng
-                                </button>
+                        <!-- Danh sách voucher -->
+                        <ng-container *ngIf="vouchers.length > 0">
+                            <div class="product-voucher-label mt-3">
+                            <i class="fa-regular fa-wallet"></i>
+                            Voucher khả dụng bạn đã lưu
                             </div>
+                            <div class="product-voucher-list">
+                                <div class="pv-card"
+                                    *ngFor="let v of vouchers"
+                                    [class.pv-disabled]="!v.duDieuKien"
+                                    [class.pv-selected]="selectedVoucher?.id === v.id">
 
-                            <!-- voucher đã chọn -->
-                            <div *ngIf="selectedVoucher" class="selected-voucher mt-3">
+                                    <!-- LEFT -->
+                                    <div class="pv-left"
+                                    [ngClass]="{
+                                        'scope-shop': v.phamVi === 1,
+                                        'scope-product': v.phamVi === 2,
+                                        'scope-cat': v.phamVi === 3
+                                    }">
 
-                                Voucher đang dùng:
-                                <strong>{{selectedVoucher.maVoucher}}</strong>
+                                    <div class="pv-notch-top"></div>
+                                    <div class="pv-notch-bot"></div>
 
-                                <span class="text-success">
-                                -{{discount | number}}đ
-                                </span>
+                                    <div class="pv-icon">
+                                        <ng-container [ngSwitch]="v.loaiVoucher">
+                                        <i *ngSwitchCase="1" class="fa-regular fa-ticket-perforated"></i>
+                                        <i *ngSwitchCase="2" class="fa-regular fa-truck"></i>
+                                        <i *ngSwitchCase="3" class="fa-regular fa-rotate-left"></i>
+                                        <i *ngSwitchDefault class="fa-regular fa-ticket"></i>
+                                        </ng-container>
+                                    </div>
 
-                                <button 
-                                type="button"
-                                class="btn btn-sm ms-2"
-                                (click)="removeVoucher()">
-                                <i class="fa-solid fa-circle-xmark fa-lg" style="color: rgb(255, 52, 52);"></i>
-                                </button>
+                                    <span class="pv-scope-text">
+                                        <ng-container [ngSwitch]="v.phamVi">
+                                        <ng-container *ngSwitchCase="1">Toàn shop</ng-container>
+                                        <ng-container *ngSwitchCase="2">Sản phẩm</ng-container>
+                                        <ng-container *ngSwitchCase="3">Danh mục</ng-container>
+                                        </ng-container>
+                                    </span>
 
-                            </div>
+                                    </div>
 
-                            <!-- danh sách voucher -->
-                            <div class="voucher-list">
-                                <h6>Voucher của bạn</h6>
-                                <owl-carousel-o [options]="voucherOptions">
-                                    <ng-template carouselSlide *ngFor="let v of vouchers">
-                                        <div class="vouchergroup" style="width: fit-content;">
-                                            <div class="voucher-item">
-                                                <div class="about-grid" style="animation-name: slideInUp; animation-duration: 900ms; animation-timing-function: ease; animation-delay: 0ms; animation-direction: normal; animation-fill-mode: both;">
-                                                    <div class="box-icon" style="background: white;"><img src="assets/img/logo.svg" alt="img" style="display: initial;"></div>
-                                                    <div class="about-grid-details">
-                                                        <h3 class="box-title h6">Mã: {{v.maVoucher}}</h3>
-                                                        <div *ngIf="v.laPhanTram" class="box-text">
-                                                            Giảm: {{v.giamGia}}%
-                                                        </div>
-                                                        <div *ngIf="!v.laPhanTram" class="box-text">
-                                                            Giảm: {{v.giamGia | number}}đ
-                                                        </div>
-                                                        <small class="box-text">
-                                                            Đơn tối thiểu {{v.donHangToiThieu | number}}đ
-                                                        </small>
-                                                        
-                                                        <div class="voucher-action">
-                                                            <small class="box-text">
-                                                                Thời hạn: {{v.thoiHanBatDau | date:'dd'}} - {{v.thoiHanKetThuc | date:'dd/MM'}}
-                                                            </small> 
-                                                            <button type="button" class="btn btn-voucherapply" (click)="applyVoucher(v)"> Áp dụng </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <!-- RIGHT -->
+                                    <div class="pv-right">
+                                        <div class="pv-top">
+                                            <div class="pv-info">
+                                            <span class="pv-title">
+                                                <ng-container *ngIf="v.laPhanTram">
+                                                Giảm {{ v.giamGia }}%
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!v.laPhanTram">
+                                                Giảm {{ v.giamGia | number }}đ
+                                                </ng-container>
+                                            </span>
+
+                                            <span class="pv-sub">
+                                                <ng-container *ngIf="v.laPhanTram && v.giamToiDa">
+                                                Tối đa {{ v.giamToiDa | number }}đ ·
+                                                </ng-container>
+                                                Đơn từ {{ v.donHangToiThieu | number }}đ
+                                            </span>
+
+                                            <span class="pv-code" style="font-weight: 600;">{{ v.maVoucher }} 
+                                                <span class="cvo-warning" *ngIf="!v.duDieuKien"><i class="fa-regular fa-circle-exclamation me-1"></i>
+                                                    {{ v.lyDoKhongDuDieuKien }}
+                                                </span>
+                                            </span>
                                             </div>
+
+                                            <button
+                                            type="button"
+                                            class="pv-save-btn"
+                                            [class.saved]="selectedVoucher?.id === v.id"
+                                            [disabled]="!v.duDieuKien"
+                                            (click)="selectedVoucher?.id === v.id ? removeVoucher() : applyVoucher(v)">
+
+                                            <ng-container *ngIf="selectedVoucher?.id === v.id">
+                                                <i class="fa-solid fa-check"></i>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="selectedVoucher?.id !== v.id && v.duDieuKien">
+                                                Dùng
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!v.duDieuKien">
+                                                <i class="fa-regular fa-lock"></i>
+                                            </ng-container>
+
+                                            </button>
                                         </div>
-                                    </ng-template>
-                                </owl-carousel-o>
-                                <div *ngIf="!vouchers.length">
-                                    <p>Không có voucher nào khả dụng.</p>
+                                    <!-- Progress + thời hạn -->
+                                    <div class="pv-bottom">
+                                        <div class="pv-bar-bg">
+                                        <div class="pv-bar-fill"
+                                            [style.width.%]="v.phanTramDaDung ?? 0">
+                                        </div>
+                                        </div>
+                                        <div class="pv-meta">
+                                            <span>Đã dùng {{ v.phanTramDaDung }}%</span>
+                                            <span *ngIf="v.thoiHanKetThuc">
+                                                HSD: {{ v.thoiHanKetThuc | date:'dd/MM/yyyy' }}
+                                            </span>
+                                            <span *ngIf="!v.thoiHanKetThuc">
+                                                Không giới hạn
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </div>
                                 </div>
-                                
                             </div>
+                        </ng-container>
+                        <div class="cvl-empty" *ngIf="vouchers.length === 0">
+                            <i class="fa-regular fa-ticket me-1"></i> Không có voucher khả dụng
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -191,7 +255,7 @@
                             </div>
                             </li>
                         </ul>
-                        <div class="form-row place-order"><button type="submit" class="ot-btn">Đặt hàng</button></div>
+                        <div class="form-row place-order"><button type="submit" class="ot-btn" [disabled]="isSubmitting">{{ isSubmitting ? 'Đang xử lý...' : 'Đặt hàng' }}</button></div>
                     </div>
                 </div>
             </div>

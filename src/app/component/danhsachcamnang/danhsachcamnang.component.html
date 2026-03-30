@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Danh sách cẩm nang</h1>
@@ -34,17 +36,17 @@
                 <i class="fa-regular fa-angle-left"></i>
             </a>
             </li>
-
+            <li *ngIf="showLeftDots">...</li>
             <!-- Page numbers -->
-            <li *ngFor="let p of getTotalPagesArray()">
-            <a
-                href="javascript:void(0)"
-                [class.active]="p === page"
-                (click)="changePage(p)">
-                {{ p }}
-            </a>
+            <li *ngFor="let p of visiblePages">
+                <a
+                    href="javascript:void(0)"
+                    [class.active]="p === page"
+                    (click)="changePage(p)">
+                    {{ p }}
+                </a>
             </li>
-
+            <li *ngIf="showRightDots">...</li>
             <!-- Next -->
             <li>
             <a

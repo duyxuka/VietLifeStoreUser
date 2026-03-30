@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../auth.service';
 import { environment } from '../../enviroments/enviroment';
-import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-thanhtoan',
@@ -24,29 +23,8 @@ export class ThanhtoanComponent {
   checkoutForm!: FormGroup;
   user: any;
   mediaBaseUrl = environment.mediaUrl;
+  isSubmitting = false;
 
-  voucherOptions: OwlOptions = {
-    loop: true,
-    autoplay: false,
-    nav: true,
-    dots: false,
-    lazyLoad: true,
-    navText: ['<', '>'],
-    responsive: {
-      0: {
-        items: 1, nav: true
-      },
-      400: {
-        items: 1, nav: true
-      },
-      740: {
-        items: 2, nav: true
-      },
-      940: {
-        items: 2, nav: true
-      }
-    },
-  };
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cartService: CartService,
@@ -87,7 +65,7 @@ export class ThanhtoanComponent {
     return this.totalPrice - this.discount;
   }
   loadVouchers() {
-    this.apiService.getVoucher(this.totalPrice).subscribe({
+    this.apiService.getMyVouchersWithStatus(this.totalPrice).subscribe({
       next: (vouchers: any) => {
         this.vouchers = vouchers;
       },
@@ -110,29 +88,41 @@ export class ThanhtoanComponent {
   }
   applyVoucher(voucher: any) {
 
-    if (this.totalPrice < voucher.donHangToiThieu) {
-      this.toastr.warning("Đơn chưa đủ điều kiện");
+    if (this.selectedVoucher) {
+      this.toastr.warning("Chỉ được áp dụng 1 voucher cho mỗi đơn hàng");
       return;
     }
-    let discount = 0;
 
+    if (!voucher.duDieuKien) {
+      this.toastr.warning(voucher.lyDoKhongDuDieuKien || "Voucher không đủ điều kiện");
+      return;
+    }
+
+    let discount = 0;
     if (voucher.laPhanTram) {
       discount = this.totalPrice * voucher.giamGia / 100;
+      if (voucher.giamToiDa && discount > voucher.giamToiDa) {
+        discount = voucher.giamToiDa;
+      }
     } else {
       discount = voucher.giamGia;
     }
-    if (discount > this.totalPrice) {
-      discount = this.totalPrice;
-    }
+
+    if (discount > this.totalPrice) discount = this.totalPrice;
+
     this.discount = discount;
     this.selectedVoucher = voucher;
-    this.checkoutForm.patchValue({
-      voucherCode: voucher.maVoucher
-    });
+    this.checkoutForm.patchValue({ voucherCode: voucher.maVoucher });
     this.toastr.success("Áp dụng voucher thành công");
   }
 
   applyVoucherByCode() {
+
+    if (this.selectedVoucher) {
+      this.toastr.warning("Bạn đã áp dụng voucher rồi");
+      return;
+    }
+
     const code = this.checkoutForm.get('voucherCode')?.value;
 
     if (!code) {
@@ -160,7 +150,11 @@ export class ThanhtoanComponent {
   }
 
   placeOrder() {
-
+    if (!this.user || !this.user.id) {
+      this.toastr.warning("Vui lòng đăng nhập để đặt hàng");
+      return;
+    }
+    if (this.isSubmitting) return;
     if (this.checkoutForm.invalid) {
       this.toastr.error("Vui lòng nhập đầy đủ thông tin");
       this.checkoutForm.markAllAsTouched();
@@ -171,7 +165,7 @@ export class ThanhtoanComponent {
       this.toastr.error("Giỏ hàng trống");
       return;
     }
-
+    this.isSubmitting = true;
     const formValue = this.checkoutForm.value;
 
     const order = {
@@ -195,7 +189,7 @@ export class ThanhtoanComponent {
         trangThai: true
       }))
     };
-    console.log("Order data:", order);
+
     this.apiService.createDonHang(order)
       .subscribe({
         next: (res: any) => {
@@ -212,6 +206,7 @@ export class ThanhtoanComponent {
                   }
                 },
                 error: (err: any) => {
+                  this.isSubmitting = false;
                   console.error("Error creating payment:", err);
                   this.toastr.error("Có lỗi xảy ra khi tạo đơn hàng");
                 }
@@ -225,6 +220,7 @@ export class ThanhtoanComponent {
           }
         },
         error: () => {
+          this.isSubmitting = false;
           this.toastr.error("Có lỗi xảy ra");
         }
       });

@@ -72,7 +72,28 @@ export class DanhsachcamnangComponent implements OnInit {
     return Math.min(this.page * this.pageSize, this.total);
   }
 
-  getTotalPagesArray(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+
+    let start = Math.max(1, this.page - 1);
+    let end = Math.min(this.totalPages, start + 2);
+
+    if (end - start < 2) {
+      start = Math.max(1, end - 2);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  get showLeftDots(): boolean {
+    return this.visiblePages[0] > 1;
+  }
+
+  get showRightDots(): boolean {
+    return this.visiblePages[this.visiblePages.length - 1] < this.totalPages;
   }
 }

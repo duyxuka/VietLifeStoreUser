@@ -197,18 +197,6 @@
                         class="fal fa-comments-question"></i>
                         <a href="/lienhe">Liên hệ</a>
                       </li>
-                      <li *ngIf="!currentUserName">
-                        <i class="fal fa-user"></i> <a
-                        href="/dangnhap">Đăng nhập</a></li>
-                      <li *ngIf="currentUserName" class="user-dropdown">
-                        <i class="fal fa-user"></i> <a
-                        href="/taikhoancuaban">Xin chào: {{ currentUserName }} <i class="fa-sharp fa-solid fa-caret-down"></i></a>
-                        <ul class="dropdown-menu">
-                          <li>
-                            <a (click)="logout()" style="cursor:pointer">Đăng xuất</a>
-                          </li>
-                        </ul>
-                      </li>
                   </ul>
                 </div>
             </div>
@@ -297,6 +285,37 @@
                             <i class="far fa-search"></i>
                           </button>
                         </form>
+                      </div>
+
+                      <div class="user-menu">
+                        <button class="icon-btn user-btn" (click)="toggleUserMenu($event)">
+                          <i class="far fa-user"></i>
+                        </button>
+                        <div class="user-dropdown-menu" *ngIf="isUserMenuOpen">
+                          <!-- CHƯA đăng nhập -->
+                          <ng-container *ngIf="!currentUserName">
+                            <a href="/dangnhap">
+                              <i class="far fa-sign-in me-2"></i> Đăng nhập
+                            </a>
+
+                            <a href="/dangky">
+                              <i class="fa-solid fa-user-plus me-2"></i> Đăng ký
+                            </a>
+                          </ng-container>
+
+                          <!-- ĐÃ đăng nhập -->
+                          <ng-container *ngIf="currentUserName">
+                            <a href="/taikhoancuaban">
+                              <i class="far fa-user-circle me-2"></i> {{ currentUserName }}
+                            </a>
+                            <a href="/donhang">
+                              <i class="far fa-box me-2"></i> Đơn hàng
+                            </a>
+                            <a (click)="logout()" style="cursor:pointer">
+                              <i class="far fa-sign-out me-2"></i> Đăng xuất
+                            </a>
+                          </ng-container>
+                        </div>
                       </div>
                       <button type="button"
                         class="icon-btn sideMenuCart" (click)="toggleCart()"><span

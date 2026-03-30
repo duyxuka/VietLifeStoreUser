@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
     <div class="breadcumb-content">
         <h1 class="breadcumb-title" >Giỏ hàng</h1>
@@ -63,18 +65,113 @@
                 </td>
                 </tr>
                 <tr>
-                <td colspan="6" class="actions">
-                    <div class="ot-cart-coupon">
-                        <button class="ot-btn totalPrice" 
-                            style="border-radius: 0;
-                            background-color: transparent;
-                            color: black;
-                            font-size: larger;">Tổng tiền: {{ totalPrice | number }}đ
+                    <td colspan="6" class="actions">
+                        <div class="product-voucher-wrap" *ngIf="vouchers.length > 0">
+                            <div class="product-voucher-label">
+                            <i class="fa-regular fa-ticket" style="color:#ee4d2d;"></i>
+                            Mã giảm giá áp dụng
+                            </div>
+                        
+                            <div class="product-voucher-list">
+                            <div class="pv-card" *ngFor="let v of vouchers">
+                        
+                                <div class="pv-left"
+                                    [ngClass]="{
+                                    'scope-shop':    v.phamVi === 1,
+                                    'scope-product': v.phamVi === 2,
+                                    'scope-cat':     v.phamVi === 3
+                                    }">
+                                <div class="pv-notch-top"></div>
+                                <div class="pv-notch-bot"></div>
+                        
+                                <div class="pv-icon">
+                                    <ng-container [ngSwitch]="v.loaiVoucher">
+                                    <i *ngSwitchCase="1" class="fa-regular fa-ticket-perforated"></i>
+                                    <i *ngSwitchCase="2" class="fa-regular fa-truck"></i>
+                                    <i *ngSwitchCase="3" class="fa-regular fa-rotate-left"></i>
+                                    <i *ngSwitchDefault  class="fa-regular fa-ticket"></i>
+                                    </ng-container>
+                                </div>
+                        
+                                <span class="pv-scope-text">
+                                    <ng-container [ngSwitch]="v.phamVi">
+                                    <ng-container *ngSwitchCase="1">Toàn shop</ng-container>
+                                    <ng-container *ngSwitchCase="2">Sản phẩm này</ng-container>
+                                    <ng-container *ngSwitchCase="3">Danh mục này</ng-container>
+                                    <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                                    </ng-container>
+                                </span>
+                        
+                                <span class="pv-badge-type">
+                                    <ng-container [ngSwitch]="v.loaiVoucher">
+                                    <ng-container *ngSwitchCase="1">Giảm đơn</ng-container>
+                                    <ng-container *ngSwitchCase="2">Miễn ship</ng-container>
+                                    <ng-container *ngSwitchCase="3">Hoàn tiền</ng-container>
+                                    <ng-container *ngSwitchDefault>Khuyến mãi</ng-container>
+                                    </ng-container>
+                                </span>
+                                </div>
+                        
+                                <div class="pv-right">
+                                <div class="pv-top">
+                                    <div class="pv-info">
+                                    <span class="pv-title">
+                                        <ng-container *ngIf="v.laPhanTram">Giảm {{ v.giamGia }}%</ng-container>
+                                        <ng-container *ngIf="!v.laPhanTram">Giảm {{ v.giamGia | number }}đ</ng-container>
+                                    </span>
+                                    <span class="pv-sub">
+                                        <ng-container *ngIf="v.laPhanTram && v.giamToiDa">
+                                        Tối đa {{ v.giamToiDa | number }}đ ·
+                                        </ng-container>
+                                        Đơn từ {{ v.donHangToiThieu | number }}đ
+                                    </span>
+                                    </div>
+                                    <button
+                                        class="pv-save-btn"
+                                        [class.saved]="isSaved(v.id)"
+                                        [disabled]="isSaved(v.id)"
+                                        (click)="saveVoucher(v.id)"
+                                        [title]="(isSaved(v.id) ? 'Đã lưu trong ví' : 'Lưu vào ví')">
+                                        <ng-container *ngIf="isSaved(v.id)">
+                                            <i class="fa-solid fa-bookmark me-1"></i>Đã lưu
+                                        </ng-container>
+                                        <ng-container *ngIf="!isSaved(v.id)">
+                                            <i class="fa-regular fa-bookmark me-1"></i>Lưu
+                                        </ng-container>
+                                    </button>
+                                </div>
+                        
+                                <div class="pv-bottom">
+                                    <div class="pv-bar-bg">
+                                    <div class="pv-bar-fill"
+                                        [style.width.%]="v.phanTramDaDung ?? 0"></div>
+                                    </div>
+                                    <div class="pv-meta">
+                                    <span>Đã dùng {{ v.phanTramDaDung }}%</span>
+                                    <span>
+                                        <ng-container *ngIf="v.thoiHanKetThuc">
+                                        Thời hạn: {{ v.thoiHanKetThuc | date:'dd/MM/yyyy' }}
+                                        </ng-container>
+                                        <ng-container *ngIf="!v.thoiHanKetThuc">Không giới hạn</ng-container>
+                                    </span>
+                                    </div>
+                                </div>
+                                </div>
+                        
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="ot-cart-coupon">
+                        <button class="ot-btn totalPrice"
+                                style="border-radius: 0; background-color: transparent; color: black; font-size: larger;">
+                            Tổng tiền: {{ totalPrice | number }}đ
                         </button>
-                    </div>
-                    <a href="/thanhtoan" class="ot-btn">Thanh toán</a> 
-                    <a href="/danhsachsanpham" class="ot-btn">Tiếp tục mua hàng</a>
-                </td>
+                        </div>
+                        <a href="/thanhtoan" class="ot-btn">Thanh toán</a>
+                        <a href="/danhsachsanpham" class="ot-btn">Tiếp tục mua hàng</a>
+
+                    </td>
                 </tr>
             </tbody>
         </table>

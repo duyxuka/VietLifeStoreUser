@@ -30,6 +30,7 @@ import { authInterceptor } from './auth.interceptor';
 import { PaymentComponent } from './component/payment/payment.component';
 import { DathangthanhcongComponent } from './component/dathangthanhcong/dathangthanhcong.component';
 import { NumberShortPipe } from './number-short.pipe';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { NumberShortPipe } from './number-short.pipe';
     ResetPasswordComponent,
     ThongtincanhanComponent,
     PaymentComponent,
-    DathangthanhcongComponent
+    DathangthanhcongComponent,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,7 @@ import { NumberShortPipe } from './number-short.pipe';
       tapToDismiss: true
     }),
     ReactiveFormsModule,
-    NumberShortPipe
+    NumberShortPipe,
   ],
   providers: [
     provideAnimations(),

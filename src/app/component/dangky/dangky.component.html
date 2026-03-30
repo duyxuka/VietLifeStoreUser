@@ -1,4 +1,6 @@
-<div class="breadcumb-wrapper" data-bg-src="assets/img/bg/breadcrumb-bg.html">
+<div class="breadcumb-wrapper" style="background-image: url(assets/img/bg/breadcrumb_bg_01.jpg);background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;">
     <div class="container">
         <div class="breadcumb-content">
             <h1 class="breadcumb-title" >Đăng ký</h1>
@@ -58,6 +60,17 @@
                             placeholder="Nhập số điện thoại">
                             <small class="text-danger" *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
                                 Số điện thoại phải 10 số
+                            </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày sinh <span class="text-danger">*</span></label>
+                        <input type="text"
+                            class="form-control"
+                            formControlName="birthDay"
+                            placeholder="Nhập ngày sinh">
+                            <small class="text-danger" *ngIf="form.get('birthDay')?.touched && form.get('birthDay')?.invalid">
+                                Hãy điền ngày sinh của bạn
                             </small>
                     </div>
 
